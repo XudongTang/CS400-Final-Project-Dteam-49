@@ -3,5 +3,5 @@
 ### Milestone 1
 - [x] Class Summary
 - [x] Class Diagrams
-- [x] Object Diagram
-- [x] GUI layout Sketch
+- [ ] Object Diagram
+- [ ] GUI layout Sketch
