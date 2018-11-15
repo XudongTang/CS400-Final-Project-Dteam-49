@@ -4,4 +4,4 @@
 - [x] Class Summary
 - [x] Class Diagrams
 - [ ] Object Diagram
-- [ ] GUI layout Sketch
+- [x] GUI layout Sketch
