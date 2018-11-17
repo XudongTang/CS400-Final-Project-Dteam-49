@@ -32,8 +32,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
      * (non-Javadoc)
      * @see skeleton.FoodDataADT#loadFoodItems(java.lang.String)
      */
-    @SuppressWarnings("null")
-	@Override
+    @Override
     public void loadFoodItems(String filePath) {
 			Scanner scnr;
 			int count = 0;
@@ -45,48 +44,50 @@ public class FoodData implements FoodDataADT<FoodItem> {
 					String id = null;
 					String name = null;
 					count ++;
-					if (count % 12 == 1) {
+					int result = count % 12;
+					switch (result) {
+					case 1:
 						id = scnr.next();
-					}
-					if (count % 12 == 2) {
+						break;
+					case 2:
 						name = scnr.next();
 						foodItemList.add(new FoodItem(id, name));
 						foodIndex ++;
-					}
-					if (count % 12 == 3) {
+						break;
+					case 3:
 						scnr.next();
-					}
-					if (count % 12 == 4) {
+						break;
+					case 4:
 						foodItemList.get(foodIndex).addNutrient("calories", scnr.nextInt());
-					}
-					if (count % 12 == 5) {
+						break;
+					case 5:
 						scnr.next();
-					}
-					if (count % 12 == 6) {
+						break;
+					case 6:
 						foodItemList.get(foodIndex).addNutrient("fat", scnr.nextInt());
-					}
-					if (count % 12 == 7) {
+						break;
+					case 7:
 						scnr.next();
-					}
-					if (count % 12 == 8) {
+						break;
+					case 8:
 						foodItemList.get(foodIndex).addNutrient("carbohydrate", scnr.nextInt());
-					}
-					if (count % 12 == 9) {
+						break;
+					case 9:
 						scnr.next();
-					}
-					if (count % 12 == 10) {
-						foodItemList.get(foodIndex).addNutrient("fiber", scnr.nextInt());					
-					}
-					if (count % 12 == 11) {
+						break;
+					case 10:
+						foodItemList.get(foodIndex).addNutrient("fiber", scnr.nextInt());
+						break;
+					case 11:
 						scnr.next();
-					}
-					if (count % 12 == 0) {
+						break;
+					case 0:
 						foodItemList.get(foodIndex).addNutrient("protein", scnr.nextInt());
+						break;
 					}
 				}
 				scnr.close();
 			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
     }
