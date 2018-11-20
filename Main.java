@@ -1,5 +1,7 @@
 package application;
 	
+import java.io.File;
+
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -87,7 +89,8 @@ public class Main extends Application {
 						 public void handle(ActionEvent x) {
 							 FileChooser fileChooser = new FileChooser();
 							 fileChooser.setTitle("Open Resource File");
-							 fileChooser.showOpenDialog(dialog);
+							 File file = fileChooser.showOpenDialog(dialog);
+							 userTextField.setText(file.toString());
 							 //TODO
 						 }
 					 });
