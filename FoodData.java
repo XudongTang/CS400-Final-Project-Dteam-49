@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -23,9 +24,9 @@ public class FoodData implements FoodDataADT<FoodItem> {
      * Public constructor
      */
     public FoodData() {
-    	this.foodItemList = null;
-    	this.indexes = null;
-    }
+    	this.foodItemList = new ArrayList<FoodItem> ();
+    	this.indexes = new HashMap<String, BPTree<Double, FoodItem>> ();
+    }//FIXME
     
     
     /*
@@ -98,8 +99,13 @@ public class FoodData implements FoodDataADT<FoodItem> {
      */
     @Override
     public List<FoodItem> filterByName(String substring) {
-        // TODO : Complete
-        return null;
+        List<FoodItem> filteredFood = new ArrayList<FoodItem> ();
+        for (int i = 0; i < foodItemList.size(); ++i) {
+        	if (foodItemList.get(i).getName().equals(substring)) {
+        		filteredFood.add(foodItemList.get(i));
+        	}
+        }
+        return filteredFood;
     }
 
     /*
