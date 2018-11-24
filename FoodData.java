@@ -40,73 +40,63 @@ public class FoodData implements FoodDataADT<FoodItem> {
      */
     @Override
     public void loadFoodItems(String filePath) {
-		FileInputStream fileInput = null;
-		try {
-			fileInput = new FileInputStream(filePath);
-			Scanner scnr = new Scanner(fileInput);
-			while(scnr.hasNextLine()) {
-				String line = scnr.nextLine();
-				String [] info = line.split(",");
-				if(info.length != 12) {
-					continue;
-				}
-				FoodItem food = new FoodItem(info[0], info[1]);
-			
-				if(info[2].equals("calories")) {
-					food.addNutrient(info[2], Double.parseDouble(info[3]));
-				} else {
-					continue;
-				}
-				if(info[4].equals("fat")) {
-					food.addNutrient(info[4], Double.parseDouble(info[5]));
-				} else {
-					continue;
-				}
-				if(info[6].equals("carbohydrate")) {
-					food.addNutrient(info[6], Double.parseDouble(info[7]));
-				} else {
-					continue;
-				}
-				if(info[8].equals("fiber")) {
-					food.addNutrient(info[8], Double.parseDouble(info[9]));
-				} else {
-					continue;
-				}
-				if(info[10].equals("protein")) {
-					food.addNutrient(info[10], Double.parseDouble(info[11]));
-				} else {
-					continue;
-				}
-				foodItemList.add(food);
-			}
-			scnr.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-    }
+			Scanner scnr;
+			int count = 0;
+			int foodIndex = 0;
+			BPTree<Double, FoodItem> cal = new BPTree<Double,FoodItem>(4);
+			BPTree<Double, FoodItem> fat = new BPTree<Double,FoodItem>(4);
+			BPTree<Double, FoodItem> carbo = new BPTree<Double,FoodItem>(4);
+			BPTree<Double, FoodItem> fiber = new BPTree<Double,FoodItem>(4);
+			BPTree<Double, FoodItem> protein = new BPTree<Double,FoodItem>(4);
 
-    /**
-     * Private method to construct the nurient map
-     */
-    private void buildNutrientMap() {
-    		BPTree<Double, FoodItem> calories = new BPTree<Double, FoodItem>(4);
-    		BPTree<Double, FoodItem> fat = new BPTree<Double, FoodItem>(4);
-    		BPTree<Double, FoodItem> carbohydrate = new BPTree<Double, FoodItem>(4);
-    		BPTree<Double, FoodItem> fiber = new BPTree<Double, FoodItem>(4);
-    		BPTree<Double, FoodItem> protein = new BPTree<Double, FoodItem>(4);
-    	 	for (int i = 0; i < foodItemList.size(); i++) {
-    	 		FoodItem food = foodItemList.get(i);
-    	 		calories.insert(food.getNutrientValue("calories"),food);
-    	 		fat.insert(food.getNutrientValue("fat"), food);
-    	 		carbohydrate.insert(food.getNutrientValue("carbohydrate"), food);
-    	 		fiber.insert(food.getNutrientValue("fiber"), food);
-    	 		protein.insert(food.getNutrientValue("protein"), food);
-    	 	}
-    	 	indexes.put("calories", calories);
-    	 	indexes.put("fat", fat);
-    	 	indexes.put("carbohydrate", carbohydrate);
-    	 	indexes.put("fiber", fiber);
-    	 	indexes.put("protein", protein);
+			try {
+				scnr = new Scanner(new File(filePath));
+			while (scnr.hasNext()) {
+				String[] foodEntry = scnr.nextLine().split(",");
+				if (foodEntry.length == 0) {
+					continue;
+				}
+
+				FoodItem singleFood = new FoodItem(foodEntry[0], foodEntry[1]);
+				singleFood.addNutrient("calories", Double.parseDouble(foodEntry[3]));
+				singleFood.addNutrient("fat", Double.parseDouble(foodEntry[5]));
+				singleFood.addNutrient("carbohydrate", Double.parseDouble(foodEntry[7]));
+				singleFood.addNutrient("fiber", Double.parseDouble(foodEntry[9]));
+				singleFood.addNutrient("protein", Double.parseDouble(foodEntry[11]));
+
+				cal.insert(Double.parseDouble(foodEntry[3]), singleFood);
+				fat.insert(Double.parseDouble(foodEntry[5]), singleFood);
+				carbo.insert(Double.parseDouble(foodEntry[7]), singleFood);
+				fiber.insert(Double.parseDouble(foodEntry[9]), singleFood);
+				protein.insert(Double.parseDouble(foodEntry[11]), singleFood);
+
+				foodItemList.add(new FoodItem(foodEntry[0], foodEntry[1]));
+				foodIndex++;
+
+				boolean notDone = true;
+				for (int i = 0; i < foodItemList.size(); i++) {
+					String curFood = foodEntry[1];
+					if (curFood.compareTo(foodItemList.get(i).getName()) < 0) {
+						foodItemList.add(i, singleFood);
+						notDone = false;
+						break;
+					}
+				}
+				if (notDone) {
+					foodItemList.add(singleFood);
+				}
+			}
+
+				scnr.close();
+				this.indexes.put("calories", cal);
+				this.indexes.put("fat", fat);
+				this.indexes.put("carbohydrate", carbo);
+				this.indexes.put("fiber", fiber);
+				this.indexes.put("protein", protein);
+		 
+			}catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
     }
     
     /*
@@ -132,7 +122,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
     @Override
     public List<FoodItem> filterByNutrients(List<String> rules) {
     		List<FoodItem> result = new ArrayList<FoodItem> ();
-    		buildNutrientMap();
+    		//FIXME buildNutrientMap();
     		for(int i = 0; i < rules.size(); i++) {
     			String[] rule = rules.get(i).split(" ");
     			String nutrient = rule[0];
@@ -229,5 +219,22 @@ public class FoodData implements FoodDataADT<FoodItem> {
 		
 		data.saveFoodItems("sorted.txt");
 	}
+	
+	private ArrayList<String> convert(java.util.List<FoodItem> list) {
+		 ArrayList<String> foods = new ArrayList<>();
+		 for (int i = 0; i < list.size(); i++) {
+			 String curFood = list.get(i).getName();
+			 boolean notDone = true;
+			 for (int j = 0; j < i; j++) {
+				 if(curFood.compareTo(foods.get(j)) < 0) {
+					 foods.add(j, curFood);
+					 notDone = false;
+					 break;
+				 }
+			 }
+			 if (notDone) {foods.add(curFood);}
+		 }
+		 return foods;
+	 }
 
 }
