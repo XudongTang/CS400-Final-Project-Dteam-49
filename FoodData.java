@@ -70,13 +70,11 @@ public class FoodData implements FoodDataADT<FoodItem> {
 				fiber.insert(Double.parseDouble(foodEntry[9]), singleFood);
 				protein.insert(Double.parseDouble(foodEntry[11]), singleFood);
 
-				foodItemList.add(new FoodItem(foodEntry[0], foodEntry[1]));
-				foodIndex++;
-
 				boolean notDone = true;
 				for (int i = 0; i < foodItemList.size(); i++) {
-					String curFood = foodEntry[1];
-					if (curFood.compareTo(foodItemList.get(i).getName()) < 0) {
+					String curFood = foodEntry[1].toLowerCase();
+					String listFood = foodItemList.get(i).getName().toLowerCase();
+					if (curFood.compareTo(listFood) < 0) {
 						foodItemList.add(i, singleFood);
 						notDone = false;
 						break;
@@ -94,6 +92,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
 				this.indexes.put("fiber", fiber);
 				this.indexes.put("protein", protein);
 		 
+//				System.out.print(foodItemList.get(foodItemList.size()-1).getName().toUpperCase());
 			}catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -217,24 +216,12 @@ public class FoodData implements FoodDataADT<FoodItem> {
 //			System.out.println(nutrientFilter.get(i).getName());
 //		}
 		
-		data.saveFoodItems("sorted.txt");
+//		data.saveFoodItems("sorted.txt");
+		List<FoodItem> a = data.foodItemList;
+		for(int i = 0; i < a.size(); i++) {
+			System.out.println(a.get(i).getName());
+		}
 	}
 	
-	private ArrayList<String> convert(java.util.List<FoodItem> list) {
-		 ArrayList<String> foods = new ArrayList<>();
-		 for (int i = 0; i < list.size(); i++) {
-			 String curFood = list.get(i).getName();
-			 boolean notDone = true;
-			 for (int j = 0; j < i; j++) {
-				 if(curFood.compareTo(foods.get(j)) < 0) {
-					 foods.add(j, curFood);
-					 notDone = false;
-					 break;
-				 }
-			 }
-			 if (notDone) {foods.add(curFood);}
-		 }
-		 return foods;
-	 }
 
 }
