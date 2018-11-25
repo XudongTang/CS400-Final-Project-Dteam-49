@@ -8,3 +8,11 @@
 ### Milestone 2
 - [x] GUI 
 ### Milestone 3
+#### TODO
+- [ ] filter by name
+- [ ] filter by nutrient
+- [ ] save file
+- [ ] anzlyze meal
+- [ ] remove meal list
+- [ ] update size
+- [ ] fix output file
