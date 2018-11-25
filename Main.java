@@ -42,7 +42,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 	private ListView<String> list2 = new ListView<String>();
 	private Label label1 = new Label("Current Food List");
 	private Label label2 = new Label("Current Meal List");
-	private Label label3 = new Label("Number of Food: (Replace with actual list)");
+	private Label label3 = new Label("Number of Food: ");
 	private VBox vbox = new VBox();
 	private Button btn1 = new Button("Load Additional Food");
 	private Button btn2 = new Button("Add Food");
@@ -51,6 +51,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 	private Button btn5 = new Button("Save");
 	private Button btn6 = new Button("Anzlyze Meal");
 	private Button btn7 = new Button("Add to Meal List");
+	private Button btn8 = new Button("Remove");
 	private ArrayList <String> uploadList = new ArrayList<String> ();
 	private List <FoodItem> mealList = new ArrayList<FoodItem> ();
 
@@ -62,20 +63,6 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("DEMO");
 			scene.setFill(Color.WHITE);
-			
-			
-			
-			//replace with actual food list
-//			items1 = FXCollections.observableArrayList (
-//			    "Apple", "Beans", "Chicken", "Danelion Green", "Eggs", "Flax Seed"
-//			    , "Garlic", "Hominy", "Ice Cream", "Jicama", "Kale", "Lemon Juice", 
-//			    "Millet", "Nuts", "Olive Oil", "Pineapple", "Quinoa", "Raspberries", 
-//			    "Salmon", "Tomatoes", "Umami", "Vinegar", "Wild Rice", "Xigua", 
-////			    "Yogurt", "Zucchini");
-//			ObservableList<String> items2 =FXCollections.observableArrayList (
-//				"Apple", "Beans", "Chicken", "Danelion Green", "Eggs", "Flax Seed"
-//				, "Garlic", "Hominy");
-			
 			
 			 btn1.setOnAction(new EventHandler<ActionEvent>() {
 				 @Override
@@ -127,7 +114,6 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		             dialog.show();
 				 }
 			 });
-			try {
 			 btn2.setOnAction(new EventHandler<ActionEvent>() {
 				 @Override
 				 public void handle(ActionEvent e) {
@@ -180,14 +166,18 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 							 String name1 = userTextField2.getText();
 							 FoodItem newFood = null;
 							 if (name1 != null && id1 != null && id1.length() == 24) {
-								 newFood = new FoodItem(id1, name1);
-								 newFood.addNutrient("calories", Double.parseDouble(userTextField3.getText()));
-								 newFood.addNutrient("fat", Double.parseDouble(userTextField4.getText()));
-								 newFood.addNutrient("carbohydrate", Double.parseDouble(userTextField5.getText()));
-								 newFood.addNutrient("fiber", Double.parseDouble(userTextField6.getText()));
-								 newFood.addNutrient("protein", Double.parseDouble(userTextField7.getText()));
-								 foods.addFoodItem(newFood);
-								 dialog.close();
+								 try{
+									 newFood = new FoodItem(id1, name1);
+									 newFood.addNutrient("calories", Double.parseDouble(userTextField3.getText()));
+									 newFood.addNutrient("fat", Double.parseDouble(userTextField4.getText()));
+									 newFood.addNutrient("carbohydrate", Double.parseDouble(userTextField5.getText()));
+									 newFood.addNutrient("fiber", Double.parseDouble(userTextField6.getText()));
+									 newFood.addNutrient("protein", Double.parseDouble(userTextField7.getText()));
+									 foods.addFoodItem(newFood);
+									 dialog.close();
+								 } catch (Exception e) {
+									 load.add(warn, 1, 8);
+								 }
 							 } else {
 								 load.add(warn, 1, 8);
 							 }
@@ -199,9 +189,6 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 		             dialog.show();
 				 }
 			 });
-			} catch (NullPointerException e) {
-				System.out.println("Error");
-			}
 			 btn3.setOnAction(new EventHandler<ActionEvent>() {
 				 @Override
 				 public void handle(ActionEvent e) {
@@ -298,15 +285,12 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 				 }
 				
 			 });
-//			 list1.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-//				list1.setOnMouseClicked(new EventHandler<Event>() {
-//					@Override
-//	                public void handle(Event event) {
-//						ObservableList<String> selectedItems =  list1.getSelectionModel()
-//								.getSelectedItems();
-//						
-//					}
-//			});
+			 btn8.setOnAction(new EventHandler<ActionEvent>() {
+				 @Override
+				 public void handle(ActionEvent e) {
+					 
+				 } 
+			});
 			
 			list1.setItems(items1);
 			list1.setPrefWidth(200);
@@ -314,12 +298,6 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 			list1.setTranslateX(50);
 			list1.setTranslateY(50);
 			list1.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-//			list1.setOnMouseClicked(new EventHandler<Event> () {
-//				@Override
-//				public void handle (Event e) {
-//					
-//				}
-//			});
 			
 			list2.setItems(items2);
 			list2.setPrefWidth(200);
@@ -363,7 +341,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 			btn5.setTranslateY(450);
 			
 			btn6.setMinHeight(vbox.getPrefHeight());
-			btn6.setMinWidth(vbox.getPrefWidth());
+			btn6.setMinWidth(vbox.getPrefWidth()/2);
 			btn6.setTranslateX(550);
 			btn6.setTranslateY(450);
 			
@@ -372,9 +350,15 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 			btn7.setTranslateX(50);
 			btn7.setTranslateY(450);
 			
+			btn8.setMinHeight(vbox.getPrefHeight());
+			btn8.setMinWidth(vbox.getPrefWidth()/2);
+			btn8.setTranslateX(650);
+			btn8.setTranslateY(450);
+			
 			root.getChildren().addAll(list1, list2
 					, label1, label2, label3, btn1
-					, btn2, btn3, btn4, btn5, btn6, btn7);
+					, btn2, btn3, btn4, btn5, btn6
+					, btn7, btn8);
 
 			
 			primaryStage.show();
