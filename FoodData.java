@@ -184,8 +184,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
 		try {
 			PrintWriter outFS = new PrintWriter(fileOutput);
 			for (int i = 0; i < foodItemList.size(); i++) {
-				System.out.println(foodItemList.get(i).getName());
-				outFS.println(foodItemList.get(i).getName());
+				outFS.println(foodItemList.get(i));
 			}
 			outFS.flush();
 			outFS.close();
