@@ -1,5 +1,7 @@
 package application;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +19,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -50,7 +54,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 	private Button btn6 = new Button("Anzlyze Meal");
 	private Button btn7 = new Button("Add to Meal List");
 	private Button btn8 = new Button("Remove");
-	private ArrayList <String> uploadList = new ArrayList<String> ();
+	private Button btn9 = new Button("Help");
 	private List <FoodItem> mealList = new ArrayList<FoodItem> ();
 	private List<FoodItem> filterNut = new ArrayList<FoodItem> ();
 	private List <String> rule = new ArrayList<String> ();
@@ -100,7 +104,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 						public void handle(ActionEvent x) {
 							if (!userTextField.getText().isEmpty()) {
 								foods.loadFoodItems(userTextField.getText());
-								uploadList = convert(foods.getAllFoodItems());
+								convert(foods.getAllFoodItems());
 								update(foods.getAllFoodItems());
 							}
 
@@ -207,7 +211,8 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 					 Button upload = new Button ("SEARCH");
 					 load.add(upload, 0, 2);
 					 upload.setOnAction(new EventHandler<ActionEvent>() {
-						 public void handle(ActionEvent x) {
+						 @SuppressWarnings("static-access")
+						public void handle(ActionEvent x) {
 							 final Stage panel = new Stage();
 							 panel.initModality(Modality.APPLICATION_MODAL);
 							 panel.initOwner(dialog);
@@ -251,6 +256,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 				 }
 			 });
 			 btn4.setOnAction(new EventHandler<ActionEvent>() {
+					@SuppressWarnings("static-access")
 					@Override
 					public void handle(ActionEvent e) {
 						rule = new ArrayList<String>();
@@ -348,17 +354,19 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 										try {
 											String curRule = null;
 											curRule = combo1.getValue() + " " + combo2.getValue() + " " + number.getText();
+											Double.parseDouble(number.getText());
 											rule.add(curRule);
 											ObservableList<String> showRule = FXCollections.observableArrayList(rule);
 											rulesList.setItems(showRule);
-											Label currentRule = new Label ("Current Rules");
-//											load.add(currentRule, 0, 1);
-//											load.add(rulesList, 1, 1);
 											popUp.close();
+										}catch (NumberFormatException e2) {
+											try {
+												load1.add(warn, 2, 4);
+											} catch (IllegalArgumentException e3) {
+												
+											}
 										}catch(IllegalArgumentException e1) {
 											popUp.close();
-										}catch (Exception e2) {
-//											load.add(warn, 3, 4);
 										}
 									}
 								});
@@ -386,7 +394,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 									 box.setAlignment(Pos.TOP_CENTER);
 									 Insets margin = new Insets(0,0,25,0);
 									 box.setMargin(nutSearch, margin);
-								 } catch (NullPointerException e1) {
+								 } catch (Exception e1) {
 									 nutSearch.setItems(FXCollections.observableArrayList("No Match Found"));
 								 }
 								 
@@ -545,6 +553,27 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 						list2.setItems(items2);
 				 } 
 			});
+			 btn9.setOnAction(new EventHandler<ActionEvent>() {
+				 @Override
+				 public void handle(ActionEvent e) {
+					 final Stage dialog = new Stage();
+					 dialog.initModality(Modality.APPLICATION_MODAL);
+					 dialog.initOwner(primaryStage);
+					 Scene helpScene = new Scene(new Group());
+					 VBox root = new VBox();
+					 final ImageView selectedImage = new ImageView();
+					 try {
+						Image image1 = new Image(new FileInputStream("application\\help.jpg"));
+						selectedImage.setImage(image1);
+					    root.getChildren().addAll(selectedImage);
+					    helpScene.setRoot(root);
+					    dialog.setScene(helpScene);
+					    dialog.show();
+					} catch (FileNotFoundException e1) {
+						e1.printStackTrace();
+					}
+				 }
+			 });
 			
 			list1.setItems(items1);
 			list1.setPrefWidth(200);
@@ -610,10 +639,14 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 			btn8.setTranslateX(650);
 			btn8.setTranslateY(450);
 			
+			btn9.setMinHeight(vbox.getPrefHeight()/2);
+			btn9.setMinWidth(vbox.getPrefWidth()/2);
+			btn9.setTranslateX(650);
+			btn9.setTranslateY(520);
 			root.getChildren().addAll(list1, list2
 					, label1, label2, label3, btn1
 					, btn2, btn3, btn4, btn5, btn6
-					, btn7, btn8);
+					, btn7, btn8, btn9);
 
 			
 			primaryStage.show();
