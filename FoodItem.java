@@ -70,7 +70,7 @@ public class FoodItem {
      * If not present, then returns 0.
      */
     public double getNutrientValue(String name) {
-    		if(nutrients.containsKey(name)) {
+    		if(!nutrients.containsKey(name)) {
     			return 0;
     		}
     		return nutrients.get(name);
