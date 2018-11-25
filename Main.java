@@ -180,10 +180,18 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 									 foods.addFoodItem(newFood);
 									 dialog.close();
 								 } catch (Exception e) {
-									 load.add(warn, 1, 8);
+									 try {
+										 load.add(warn, 1, 8);
+									 } catch (IllegalArgumentException e1) {
+										 
+									 } 
 								 }
 							 } else {
-								 load.add(warn, 1, 8);
+								 try {
+									 load.add(warn, 1, 8);
+								 } catch (IllegalArgumentException e) {
+									 
+								 }
 							 }
 							 update (foods.getAllFoodItems());
 						 }
@@ -564,7 +572,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 					 VBox root = new VBox();
 					 final ImageView selectedImage = new ImageView();
 					 try {
-						Image image1 = new Image(new FileInputStream("application/help.jpg"));
+						Image image1 = new Image(new FileInputStream("help.jpg"));
 						selectedImage.setImage(image1);
 					    root.getChildren().addAll(selectedImage);
 					    helpScene.setRoot(root);
