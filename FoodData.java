@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 /**
  * This class represents the backend for managing all 
@@ -104,14 +105,16 @@ public class FoodData implements FoodDataADT<FoodItem> {
      */
     @Override
     public List<FoodItem> filterByName(String substring) {
-    		List<FoodItem> filteredFood = new ArrayList<FoodItem> ();
-         for (int i = 0; i < foodItemList.size(); i++) {
-         	if (foodItemList.get(i).getName().contains(substring)) {
-         		filteredFood.add(foodItemList.get(i));
-         	}
-         }
-         return filteredFood;
+        List<FoodItem> filteredFood = new ArrayList<FoodItem> ();
+        for (int i = 0; i < foodItemList.size(); ++i) {
+        	boolean exists = Pattern.compile(Pattern.quote(substring), Pattern.CASE_INSENSITIVE).matcher(foodItemList.get(i).getName()).find();
+        	if (exists) {
+        		filteredFood.add(foodItemList.get(i));
+        	}
+        }
+        return filteredFood;
     }
+
 
     /*
      * (non-Javadoc)
@@ -121,18 +124,19 @@ public class FoodData implements FoodDataADT<FoodItem> {
     @Override
     public List<FoodItem> filterByNutrients(List<String> rules) {
     		List<FoodItem> result = new ArrayList<FoodItem> ();
-    		//FIXME buildNutrientMap();
     		for(int i = 0; i < rules.size(); i++) {
     			String[] rule = rules.get(i).split(" ");
     			String nutrient = rule[0];
     			String comparator = rule[1];
     			Double value = Double.parseDouble(rule[2]);
     			List<FoodItem> filtered = indexes.get(nutrient).rangeSearch(value, comparator);
-    			for(FoodItem food: filtered) {
+    			System.out.println(filtered.size());
+    			for(FoodItem food : filtered) {
     				if(!result.contains(food)) {
     					result.add(food);
     				}
     			}
+        		System.out.print(indexes.get(nutrient).toString());
     		}
         return result;
     }
@@ -144,7 +148,20 @@ public class FoodData implements FoodDataADT<FoodItem> {
      */
     @Override
     public void addFoodItem(FoodItem foodItem) {
-        foodItemList.add(foodItem);
+    	boolean notDone = true;
+		String curFood = foodItem.getName().toLowerCase();
+
+		for (int i = 0; i < foodItemList.size(); i++) {
+			String listFood = foodItemList.get(i).getName().toLowerCase();
+			if (curFood.compareTo(listFood) < 0) {
+				foodItemList.add(i, foodItem);
+				notDone = false;
+				break;
+			}
+		}
+		if (notDone) {
+			foodItemList.add(foodItem);
+		}
     }
 
     /*
@@ -166,12 +183,6 @@ public class FoodData implements FoodDataADT<FoodItem> {
 		File fileOutput = new File(filename);
 		try {
 			PrintWriter outFS = new PrintWriter(fileOutput);
-			Collections.sort(foodItemList, new Comparator<FoodItem>() {
-				@Override
-				public int compare(FoodItem food1, FoodItem food2) {
-			        return food1.getName().compareTo(food2.getName());
-			    }
-			});
 			for (int i = 0; i < foodItemList.size(); i++) {
 				System.out.println(foodItemList.get(i).getName());
 				outFS.println(foodItemList.get(i).getName());
@@ -208,19 +219,15 @@ public class FoodData implements FoodDataADT<FoodItem> {
 //		nutrients.put("fiber", 20.0);
 //		nutrients.put("protein", 20.0);
 		
-//		List<String> rules = new ArrayList<String>();
-//		rules.add("calories == 0");
-//		
-//		List<FoodItem> nutrientFilter = data.filterByNutrients(rules);
-//		for (int i = 0; i < nutrientFilter.size(); i++) {
-//			System.out.println(nutrientFilter.get(i).getName());
-//		}
+		List<String> rules = new ArrayList<String>();
+		rules.add("calories == 0");
+		
+		List<FoodItem> nutrientFilter = data.filterByNutrients(rules);
+		for (int i = 0; i < nutrientFilter.size(); i++) {
+			System.out.println(nutrientFilter.get(i).getName());
+		}
 		
 //		data.saveFoodItems("sorted.txt");
-		List<FoodItem> a = data.foodItemList;
-		for(int i = 0; i < a.size(); i++) {
-			System.out.println(a.get(i).getName());
-		}
 	}
 	
 

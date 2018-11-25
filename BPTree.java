@@ -1,3 +1,5 @@
+package application;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -411,7 +413,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             		}	
             		for (int i = index; i < keys.size();i++) {
             			if(!key.equals(keys.get(i))) {
-            				throw new IndexOutOfBoundsException();
+            				break;
             			}
             			qualified.add(values.get(i));
             		}
@@ -551,14 +553,17 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         // just that it functions as a data structure with
         // insert, rangeSearch, and toString() working.
         List<Double> list = new ArrayList<>();
+        int count = 0;
         for (int i = 0; i < 400; i++) {
-//            Double j = dd[rnd1.nextInt(4)];
-//            list.add(j);
-            bpTree.insert(0.0d, 0.0d);
+            Double j = dd[rnd1.nextInt(4)];
+            list.add(j);
+            bpTree.insert(j,j);
+            if(j.compareTo(0.5) == 0) {count++;}
         }
         System.out.println("\n\nTree structure:\n" + bpTree.toString());
 
-        List<Double> filteredValues = bpTree.rangeSearch(0.0d, ">=");
+        List<Double> filteredValues = bpTree.rangeSearch(0.5d, "==");
+        System.out.println(count);
         System.out.println(filteredValues.size() + "Filtered values: " + filteredValues.toString());
     }
 
