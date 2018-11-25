@@ -2,6 +2,7 @@ package application;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,7 +66,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 			Group root = new Group();
 			Scene scene = new Scene (root, 800, 600);
 			primaryStage.setScene(scene);
-			primaryStage.setTitle("DEMO");
+			primaryStage.setTitle("FOOD QUERY");
 			scene.setFill(Color.WHITE);
 			
 			 btn1.setOnAction(new EventHandler<ActionEvent>() {
@@ -563,13 +564,14 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 					 VBox root = new VBox();
 					 final ImageView selectedImage = new ImageView();
 					 try {
-						Image image1 = new Image(new FileInputStream("application\\help.jpg"));
+						Image image1 = new Image(new FileInputStream("application/help.jpg"));
 						selectedImage.setImage(image1);
 					    root.getChildren().addAll(selectedImage);
 					    helpScene.setRoot(root);
 					    dialog.setScene(helpScene);
 					    dialog.show();
 					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 				 }
