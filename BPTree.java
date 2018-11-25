@@ -390,6 +390,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
 			}
 			sibling.previous = this;
 			sibling.next = this.next;
+			if (this.next != null) {this.next.previous = sibling;}
 			this.next = sibling;
 			return sibling;
         }
@@ -454,7 +455,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             	boolean done = false;
             	while(curNode != null && !done) {
             		for(int i = 0; i < curNode.keys.size(); i++) {
-            			if(!key.equals(curNode.keys.get(i))) {
+            			if(key.compareTo(curNode.keys.get(i)) < 0) {
             				done = true;
             				break;
             			}
@@ -464,18 +465,18 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             	}
             	
             	
-            	int index = keys.size() - 1; 
+            	int index = this.keys.size() - 1; 
             	try {
             		while (key.compareTo(this.keys.get(index)) < 0) {
             			index--;
             		}	
             		for (int i = index; i >= 0 ;i--) {
-            			qualified.add(values.get(index));
+            			qualified.add(values.get(i));
             		}
             		
             		curNode = this.previous;
             		while(curNode != null) {
-            			for (int i = curNode.keys.size(); i > -1 ; i--) {
+            			for (int i = curNode.keys.size() - 1; i > -1 ; i--) {
             				qualified.add(curNode.values.get(i));
             			}
             			curNode = curNode.previous;
@@ -491,7 +492,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             	boolean done = false;
             	while(curNode != null && !done) {
             		for(int i = curNode.keys.size() - 1; i > -1; i--) {
-            			if(!key.equals(curNode.keys.get(i))) {
+            			if(key.compareTo(curNode.keys.get(i)) > 0) {
             				done = true;
             				break;
             			}
@@ -507,7 +508,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             			index++;
             		}	
             		for (int i = index; i < keys.size() ;i++) {
-            			qualified.add(values.get(index));
+            			qualified.add(values.get(i));
             		}
             		
             		curNode = this.next;
@@ -518,6 +519,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             			curNode = curNode.next;
             		}
             	}catch (IndexOutOfBoundsException e) {
+            		System.out.println("WARNING!!!!!!!!");
             		return qualified;
             	}
             }

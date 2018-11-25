@@ -252,6 +252,9 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 			 btn4.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent e) {
+						rule = new ArrayList<String>();
+						filterNut = new ArrayList<FoodItem>();
+						
 						final Stage dialog = new Stage();
 						dialog.initModality(Modality.APPLICATION_MODAL);
 						dialog.initOwner(primaryStage);
@@ -260,13 +263,15 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 						load.setHgap(10);
 						load.setVgap(10);
 						load.setPadding(new Insets(0, 0, 0, 0));
+						ListView<String> rulesList = new ListView<>();
+						rulesList.setMaxWidth(100);
 						Text scenetitle = new Text("Nutrient Filter");
 						scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
 						load.add(scenetitle, 0, 0, 2, 1);
 						Button upload = new Button("SEARCH");
-						load.add(upload, 0, 1);
+						load.add(upload, 0, 2);
 						Button upload2 = new Button("ADD RULE");
-						load.add(upload2, 1, 1);
+						load.add(upload2, 1, 2);
 						upload2.setOnAction(new EventHandler<ActionEvent>() {
 							public void handle(ActionEvent x) {
 								final Stage popUp = new Stage();
@@ -306,7 +311,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 								load1.add(number, 2, 1);
 								Button submit = new Button ("ADD RULE");
 								load1.add(submit, 2, 2);
-								Label warn = new Label ("invalid inout");
+								Label warn = new Label ("invalid input");
 								
 								submit.setOnAction(new EventHandler<ActionEvent>() {
 									
@@ -316,10 +321,16 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 											String curRule = null;
 											curRule = combo1.getValue() + " " + combo2.getValue() + " " + number.getText();
 											rule.add(curRule);
-//											System.out.println(rule.get(0));
+											ObservableList<String> showRule = FXCollections.observableArrayList(rule);
+											rulesList.setItems(showRule);
+											Label currentRule = new Label ("Current Rules");
+											load.add(currentRule, 0, 1);
+											load.add(rulesList, 1, 1);
 											popUp.close();
-										}catch (Exception e1) {
-											load.add(warn, 2, 3);
+										}catch(IllegalArgumentException e1) {
+											popUp.close();
+										}catch (Exception e2) {
+											load.add(warn, 3, 4);
 										}
 									}
 								});

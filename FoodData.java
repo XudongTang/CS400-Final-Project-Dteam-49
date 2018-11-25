@@ -125,19 +125,30 @@ public class FoodData implements FoodDataADT<FoodItem> {
     @Override
     public List<FoodItem> filterByNutrients(List<String> rules) {
     		List<FoodItem> result = new ArrayList<FoodItem> ();
-    		for(int i = 0; i < rules.size(); i++) {
+    		//illegal rule
+    		if(rules.isEmpty()) {return result;}
+    		
+    		String[] basicRule = rules.get(0).split(" ");
+			String nutrient_1 = basicRule[0];
+			String comparator_1 = basicRule[1];
+			Double value_1 = Double.parseDouble(basicRule[2]);
+			result = indexes.get(nutrient_1).rangeSearch(value_1, comparator_1);
+						
+			for(int i = 1; i < rules.size(); i++) {
     			String[] rule = rules.get(i).split(" ");
     			String nutrient = rule[0];
     			String comparator = rule[1];
     			Double value = Double.parseDouble(rule[2]);
     			List<FoodItem> filtered = indexes.get(nutrient).rangeSearch(value, comparator);
+    			List<FoodItem> newResult = new ArrayList<>();
     			System.out.println(filtered.size());
-    			for(FoodItem food : filtered) {
-    				if(!result.contains(food)) {
-    					result.add(food);
+    			for(FoodItem food : result) {
+    				if(filtered.contains(food)) {
+    					newResult.add(food);
     				}
     			}
-        		System.out.print(indexes.get(nutrient).toString());
+    			result = newResult;
+        		
     		}
         return result;
     }
@@ -230,15 +241,15 @@ public class FoodData implements FoodDataADT<FoodItem> {
 //		nutrients.put("fiber", 20.0);
 //		nutrients.put("protein", 20.0);
 		
-//		List<String> rules = new ArrayList<String>();
-//		rules.add("calories == 0");
+		List<String> rules = new ArrayList<String>();
+		rules.add("calories >= 15");
 //		
-//		List<FoodItem> nutrientFilter = data.filterByNutrients(rules);
-//		for (int i = 0; i < nutrientFilter.size(); i++) {
-//			System.out.println(nutrientFilter.get(i).getName());
-//		}
+		List<FoodItem> nutrientFilter = data.filterByNutrients(rules);
+		for (int i = 0; i < nutrientFilter.size(); i++) {
+			System.out.println(nutrientFilter.get(i).getName());
+		}
 //		
-		data.saveFoodItems("sorted.txt");
+//		data.saveFoodItems("sorted.txt");
 	}
 	
 
