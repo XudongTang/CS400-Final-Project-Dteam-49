@@ -17,7 +17,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -99,8 +101,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 							if (!userTextField.getText().isEmpty()) {
 								foods.loadFoodItems(userTextField.getText());
 								uploadList = convert(foods.getAllFoodItems());
-								items1 = FXCollections.observableArrayList(uploadList);
-								list1.setItems(items1);
+								update(foods.getAllFoodItems());
 							}
 
 							dialog.close();
@@ -254,24 +255,51 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 					public void handle(ActionEvent e) {
 						rule = new ArrayList<String>();
 						filterNut = new ArrayList<FoodItem>();
-						
+						//setup stage
 						final Stage dialog = new Stage();
 						dialog.initModality(Modality.APPLICATION_MODAL);
 						dialog.initOwner(primaryStage);
-						GridPane load = new GridPane();
-						load.setAlignment(Pos.CENTER);
-						load.setHgap(10);
-						load.setVgap(10);
-						load.setPadding(new Insets(0, 0, 0, 0));
+						//layouts
+						BorderPane trail = new BorderPane();
+						trail.setPrefSize(300, 200);
+						HBox buttons = new HBox();
+						
+						//grid
+//						GridPane load = new GridPane();
+//						load.setAlignment(Pos.CENTER);
+//						load.setHgap(10);
+//						load.setVgap(10);
+//						load.setPadding(new Insets(0, 0, 0, 0));
 						ListView<String> rulesList = new ListView<>();
-						rulesList.setMaxWidth(100);
+						rulesList.setMinWidth(80);
 						Text scenetitle = new Text("Nutrient Filter");
 						scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
-						load.add(scenetitle, 0, 0, 2, 1);
+//						load.add(scenetitle, 0, 0, 2, 1);
 						Button upload = new Button("SEARCH");
-						load.add(upload, 0, 2);
+//						load.add(upload, 0, 2);
 						Button upload2 = new Button("ADD RULE");
-						load.add(upload2, 1, 2);
+//						load.add(upload2, 1, 2);
+						
+						
+						//borderPane
+						ObservableList<String> showRule = FXCollections.observableArrayList(rule);
+						rulesList.setItems(showRule);
+						Label currentRule = new Label ("Current Rules");
+						buttons.getChildren().addAll(upload, upload2);
+						buttons.setAlignment(Pos.CENTER);
+						buttons.setMargin(upload, new Insets(15,30,15,30));
+						buttons.setMargin(upload2, new Insets(15,30,15,30));
+
+						trail.setTop(scenetitle);
+						trail.setBottom(buttons);
+						trail.setLeft(currentRule);
+						trail.setCenter(rulesList);
+						trail.setMargin(currentRule, new Insets(0,10,0,10));
+						trail.setMargin(rulesList, new Insets(20,20,0,0));
+						trail.setAlignment(rulesList, Pos.CENTER);
+						trail.setAlignment(currentRule, Pos.CENTER);
+						trail.setAlignment(scenetitle, Pos.CENTER);
+						
 						upload2.setOnAction(new EventHandler<ActionEvent>() {
 							public void handle(ActionEvent x) {
 								final Stage popUp = new Stage();
@@ -324,13 +352,13 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 											ObservableList<String> showRule = FXCollections.observableArrayList(rule);
 											rulesList.setItems(showRule);
 											Label currentRule = new Label ("Current Rules");
-											load.add(currentRule, 0, 1);
-											load.add(rulesList, 1, 1);
+//											load.add(currentRule, 0, 1);
+//											load.add(rulesList, 1, 1);
 											popUp.close();
 										}catch(IllegalArgumentException e1) {
 											popUp.close();
 										}catch (Exception e2) {
-											load.add(warn, 3, 4);
+//											load.add(warn, 3, 4);
 										}
 									}
 								});
@@ -382,7 +410,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 								 panel.show();
 							}
 						});
-						Scene dialogScene = new Scene(load, 300, 200);
+						Scene dialogScene = new Scene(trail, 300, 200);
 						dialog.setScene(dialogScene);
 						dialog.show();
 					}
@@ -624,6 +652,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 	private void update (java.util.List<FoodItem> list) {
 		ObservableList<String> updateList = FXCollections.observableArrayList(convert(list));
 		list1.setItems(updateList);
+		label3.setText(String.format("Number of Food: %d", foods.getAllFoodItems().size()));
 	}
 	
 	public static void main(String[] args) {
