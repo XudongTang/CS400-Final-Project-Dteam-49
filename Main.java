@@ -7,7 +7,6 @@ import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -16,14 +15,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -56,6 +50,8 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 	private Button btn8 = new Button("Remove");
 	private ArrayList <String> uploadList = new ArrayList<String> ();
 	private List <FoodItem> mealList = new ArrayList<FoodItem> ();
+	private List<FoodItem> filterNut = new ArrayList<FoodItem> ();
+	private List <String> rule = new ArrayList<String> ();
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -213,7 +209,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 						 public void handle(ActionEvent x) {
 							 final Stage panel = new Stage();
 							 panel.initModality(Modality.APPLICATION_MODAL);
-							 panel.initOwner(primaryStage);
+							 panel.initOwner(dialog);
 							 VBox box = new VBox();
 							 Button addButton = new Button("Add to list");
 							 ListView<String> nameSearch = new ListView<>();
@@ -303,15 +299,76 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 									    );
 								final ComboBox<String> combo1 = new ComboBox<String>(nutrient);
 								final ComboBox<String> combo2 = new ComboBox<String>(comparator);
+								
 								TextField number = new TextField();
 								load1.add(combo1, 0, 1);
 								load1.add(combo2, 1, 1);
 								load1.add(number, 2, 1);
 								Button submit = new Button ("ADD RULE");
 								load1.add(submit, 2, 2);
+								Label warn = new Label ("invalid inout");
+								
+								submit.setOnAction(new EventHandler<ActionEvent>() {
+									
+									@Override
+									public void handle(ActionEvent e) {
+										try {
+											String curRule = null;
+											curRule = combo1.getValue() + " " + combo2.getValue() + " " + number.getText();
+											rule.add(curRule);
+//											System.out.println(rule.get(0));
+											popUp.close();
+										}catch (Exception e1) {
+											load.add(warn, 2, 3);
+										}
+									}
+								});
+								
 								Scene newScene = new Scene(load1, 400, 200);
 								popUp.setScene(newScene);
 								popUp.show();
+							}
+						});
+						upload.setOnAction(new EventHandler<ActionEvent>() {
+							@Override
+							public void handle(ActionEvent e) {
+								final Stage panel = new Stage();
+								 panel.initModality(Modality.APPLICATION_MODAL);
+								 panel.initOwner(dialog);
+								 Button addButton = new Button("Add to list");
+								 VBox box = new VBox();
+								 ListView<String> nutSearch = new ListView<>();
+								 try {
+									 filterNut = foods.filterByNutrients(rule);
+									 nutSearch.setMinHeight(500);
+									 nutSearch.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+									 nutSearch.setItems(FXCollections.observableArrayList(convert(filterNut)));
+									 box.getChildren().addAll(nutSearch,addButton);
+									 box.setAlignment(Pos.TOP_CENTER);
+									 Insets margin = new Insets(0,0,25,0);
+									 box.setMargin(nutSearch, margin);
+								 } catch (NullPointerException e1) {
+									 nutSearch.setItems(FXCollections.observableArrayList("No Match Found"));
+								 }
+								 
+								 
+								 addButton.setOnAction(new EventHandler<ActionEvent>() {
+									@Override
+									public void handle(ActionEvent event) {
+										ObservableList<Integer> index = nutSearch.getSelectionModel().getSelectedIndices();
+										for (int i = 0; i < index.size(); ++i) {
+											mealList.add(filterNut.get(index.get(i)));
+										}
+										mealList = sort(mealList);
+										items2 = FXCollections.observableArrayList(convert(mealList));
+										list2.setItems(items2);
+										panel.close();
+										dialog.close();
+									}
+								 });
+								 Scene searchList = new Scene(box,400,600);
+								 panel.setScene(searchList);
+								 panel.show();
 							}
 						});
 						Scene dialogScene = new Scene(load, 300, 200);
