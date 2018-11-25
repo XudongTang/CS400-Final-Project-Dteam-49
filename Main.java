@@ -388,9 +388,36 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 					 load.setHgap(10);
 					 load.setVgap(10);
 					 load.setPadding(new Insets(0, 0, 0, 0));
-					 Text scenetitle = new Text("NUTRIENT ANAYLZE: UNAVAILABLE IN DEMO");
+					 Text scenetitle = new Text("Nutritional Information Summary");
 					 scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
-					 load.add(scenetitle, 0, 0, 2, 1);
+					 
+					 Double calories = 0d;
+					 Double fat = 0d;
+					 Double carbohydrate = 0d;
+					 Double fiber = 0d;
+					 Double protein = 0d;
+					 
+					 for (FoodItem food: mealList) {
+						 calories += food.getNutrientValue("calories");
+						 fat += food.getNutrientValue("fat");
+						 carbohydrate += food.getNutrientValue("carbohydrate");
+						 fiber += food.getNutrientValue("fiber");
+						 protein += food.getNutrientValue("protein");
+					 }
+					 
+					 Text Cal = new Text(String.format("Total energy:    %.2f Cal", calories));
+					 Text Fat = new Text(String.format("Total fat:    %.2f g", fat));
+					 Text Carbo = new Text(String.format("Total carbohydrate:    %.2f g", carbohydrate));
+					 Text Fiber = new Text(String.format("Total fiber:    %.2f g", fiber));
+					 Text Protein = new Text(String.format("Total protein:    %.2f g", protein));
+
+					 load.add(scenetitle, 0, 0);
+					 load.add(Cal, 0, 1);
+					 load.add(Fat, 0, 2);
+					 load.add(Carbo, 0, 3);
+					 load.add(Fiber, 0, 4);
+					 load.add(Protein, 0, 5);
+					 
 					 Scene dialogScene = new Scene(load, 300, 200);
 		             dialog.setScene(dialogScene);
 		             dialog.show();
@@ -412,7 +439,14 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 			 btn8.setOnAction(new EventHandler<ActionEvent>() {
 				 @Override
 				 public void handle(ActionEvent e) {
-					 
+					 ObservableList<Integer> index = list2.getSelectionModel().getSelectedIndices();
+						for (int i = index.size() - 1; i > -1; i--) {
+							mealList.remove((int)index.get(i));
+						}
+						mealList = sort(mealList);
+						
+						items2 = FXCollections.observableArrayList(convert(mealList));
+						list2.setItems(items2);
 				 } 
 			});
 			
@@ -428,6 +462,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 			list2.setPrefHeight(400);
 			list2.setTranslateX(550);
 			list2.setTranslateY(50);
+			list2.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 			
 			label1.setTranslateX(50);
 			label1.setTranslateY(30);
