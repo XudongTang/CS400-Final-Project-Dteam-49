@@ -29,6 +29,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -217,6 +218,7 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 							 Button addButton = new Button("Add to list");
 							 ListView<String> nameSearch = new ListView<>();
 							 nameSearch.setMinHeight(500);
+							 nameSearch.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 							 
 							 String name = userTextField.getText();
 							 List<FoodItem> qualified = sort(foods.filterByName(name));
@@ -226,6 +228,21 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 							 box.setAlignment(Pos.TOP_CENTER);
 							 Insets margin = new Insets(0,0,25,0);
 							 box.setMargin(nameSearch, margin);
+							 
+							 addButton.setOnAction(new EventHandler<ActionEvent>() {
+								@Override
+								public void handle(ActionEvent event) {
+									ObservableList<Integer> index = nameSearch.getSelectionModel().getSelectedIndices();
+									for (int i = 0; i < index.size(); ++i) {
+										mealList.add(qualified.get(index.get(i)));
+									}
+									mealList = sort(mealList);
+									items2 = FXCollections.observableArrayList(convert(mealList));
+									list2.setItems(items2);
+									panel.close();
+									dialog.close();
+								}
+							 });
 							 Scene searchList = new Scene(box,400,600);
 							 panel.setScene(searchList);
 							 panel.show();
@@ -305,7 +322,59 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 			 btn5.setOnAction(new EventHandler<ActionEvent>() {
 				 @Override
 				 public void handle(ActionEvent e) {
-					 //TODO
+					 final Stage dialog = new Stage();
+					 dialog.initModality(Modality.APPLICATION_MODAL);
+					 dialog.initOwner(primaryStage);
+					 GridPane load = new GridPane();
+					 load.setAlignment(Pos.CENTER);
+					 load.setHgap(10);
+					 load.setVgap(10);
+					 load.setPadding(new Insets(0, 0, 0, 0));
+					 Label fileName = new Label("Save As:");
+					 Label location = new Label("Where");
+		       		 load.add(fileName, 0, 1);
+		       		 load.add(location, 0, 2);
+					 
+		       		 TextField userTextField = new TextField();
+					 load.add(userTextField, 1, 1);
+					 TextField fileLocation = new TextField();
+					 load.add(fileLocation, 1, 2);
+					 
+					 Button file = new Button ("Browse");
+					 Button upload = new Button ("SAVE");
+					 load.add(file, 1, 3);
+					 load.add(upload, 1, 4);
+					 file.setOnAction(new EventHandler<ActionEvent>() {
+						 public void handle(ActionEvent x) {
+							 DirectoryChooser fileChooser = new DirectoryChooser();
+							 fileChooser.setTitle("Open Resource File");
+							 File file = fileChooser.showDialog(dialog);
+							 if (file != null) {
+								 fileLocation.setText(file.toString());
+							 }
+						 }
+					 });
+					 upload.setOnAction(new EventHandler<ActionEvent>() {
+						public void handle(ActionEvent x) {
+							if (!userTextField.getText().isEmpty()) {
+								String path = "";
+								if(!fileLocation.getText().isEmpty()) {
+									path = fileLocation.getText() + "/" + userTextField.getText();
+								} else {
+									path = fileLocation.getText() + "/foodData.txt";
+								}
+								foods.saveFoodItems(path);
+								dialog.close();
+							}
+
+							dialog.close();
+							// TODO
+						}
+					 });
+					 Scene dialogScene = new Scene(load, 300, 200);
+		             dialog.setScene(dialogScene);
+		             dialog.show();
+//					 foods.saveFoodItems();
 				 }
 			 });
 			 btn6.setOnAction(new EventHandler<ActionEvent>() {
