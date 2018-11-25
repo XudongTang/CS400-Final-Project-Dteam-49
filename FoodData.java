@@ -120,6 +120,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
      * (non-Javadoc)
      * @see skeleton.FoodDataADT#filterByNutrients(java.util.List)
      * FIXME: a bug exists because of the implementation of BPTree
+     * Update: bug fixed
      */
     @Override
     public List<FoodItem> filterByNutrients(List<String> rules) {
@@ -184,7 +185,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
 		try {
 			PrintWriter outFS = new PrintWriter(fileOutput);
 			for (int i = 0; i < foodItemList.size(); i++) {
-				outFS.println(foodItemList.get(i).getName());
+				outFS.println(foodItemToString(foodItemList.get(i)));
 			}
 			outFS.flush();
 			outFS.close();
@@ -196,9 +197,20 @@ public class FoodData implements FoodDataADT<FoodItem> {
 		
 	}
 	
+	private String foodItemToString(FoodItem item) {
+		String str = item.getID() + ",";
+		str += item.getName() + ",";
+		str += "calories," + item.getNutrientValue("calories");
+		str += ",fat," + item.getNutrientValue("fat");
+		str += ",carbohydrate," + item.getNutrientValue("carbohydrate");
+		str += ",fiber," + item.getNutrientValue("fiber");
+		str += ",protein," + item.getNutrientValue("protein");
+		return str;
+	}
+	
 	public static void main(String[] args) {
 		FoodData data = new FoodData();
-		data.loadFoodItems("foodItems.txt");
+		data.loadFoodItems("foodItems.csv");
 //		for (int i = 0; i < data.foodItemList.size(); i++) {
 //			System.out.println(data.foodItemList.get(i).getName());
 //		}
@@ -218,15 +230,15 @@ public class FoodData implements FoodDataADT<FoodItem> {
 //		nutrients.put("fiber", 20.0);
 //		nutrients.put("protein", 20.0);
 		
-		List<String> rules = new ArrayList<String>();
-		rules.add("calories == 0");
-		
-		List<FoodItem> nutrientFilter = data.filterByNutrients(rules);
-		for (int i = 0; i < nutrientFilter.size(); i++) {
-			System.out.println(nutrientFilter.get(i).getName());
-		}
-		
-//		data.saveFoodItems("sorted.txt");
+//		List<String> rules = new ArrayList<String>();
+//		rules.add("calories == 0");
+//		
+//		List<FoodItem> nutrientFilter = data.filterByNutrients(rules);
+//		for (int i = 0; i < nutrientFilter.size(); i++) {
+//			System.out.println(nutrientFilter.get(i).getName());
+//		}
+//		
+		data.saveFoodItems("sorted.txt");
 	}
 	
 
