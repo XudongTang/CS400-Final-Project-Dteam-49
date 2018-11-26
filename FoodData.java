@@ -1,3 +1,19 @@
+/**
+ * Filename:   FoodData.java
+ * Project:    Team Project
+ * Authors:    Debra Deppeler, Xudong Tang, Yixian Gan, Yiye Dang, Daoxing Zhang, Qiuhong Li
+ *
+ * Semester:   Fall 2018
+ * Course:     CS400
+ * Lecture:    lec001
+ * 
+ * Due Date:   Before 10pm on November 30, 2018
+ * Version:    1.0
+ * 
+ * Credits:    NA
+ * 
+ * Bugs:       no known bugs, but not complete either
+ */
 package application;
 
 import java.io.File;
@@ -13,7 +29,7 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 /**
- * This class represents the backend for managing all 
+ * This class represents the back-end for managing all 
  * the operations associated with FoodItems
  * 
  * @author sapan (sapan@cs.wisc.edu)
@@ -35,15 +51,19 @@ public class FoodData implements FoodDataADT<FoodItem> {
     }
     
     
-    /*
-     * (non-Javadoc)
-     * @see skeleton.FoodDataADT#loadFoodItems(java.lang.String)
+     /**
+     * This method Loads the data into a fooditemList. 
+     * 
+     * @param filePath path of the food item data file
+     * @throws FileNotFoundException if the file does not exit
+     * 
      */
     @Override
     public void loadFoodItems(String filePath) {
 			Scanner scnr;
 			int count = 0;
 			int foodIndex = 0;
+	   		//create BPTrees with branching factor of 3
 			BPTree<Double, FoodItem> cal = new BPTree<Double,FoodItem>(4);
 			BPTree<Double, FoodItem> fat = new BPTree<Double,FoodItem>(4);
 			BPTree<Double, FoodItem> carbo = new BPTree<Double,FoodItem>(4);
@@ -57,20 +77,23 @@ public class FoodData implements FoodDataADT<FoodItem> {
 				if (foodEntry.length == 0) {
 					continue;
 				}
-
+				
+				//Adds nutrients and values to this food
 				FoodItem singleFood = new FoodItem(foodEntry[0], foodEntry[1]);
 				singleFood.addNutrient("calories", Double.parseDouble(foodEntry[3]));
 				singleFood.addNutrient("fat", Double.parseDouble(foodEntry[5]));
 				singleFood.addNutrient("carbohydrate", Double.parseDouble(foodEntry[7]));
 				singleFood.addNutrient("fiber", Double.parseDouble(foodEntry[9]));
 				singleFood.addNutrient("protein", Double.parseDouble(foodEntry[11]));
-
+				
+				//Inserts the key and value in the appropriate nodes in the tree
 				cal.insert(Double.parseDouble(foodEntry[3]), singleFood);
 				fat.insert(Double.parseDouble(foodEntry[5]), singleFood);
 				carbo.insert(Double.parseDouble(foodEntry[7]), singleFood);
 				fiber.insert(Double.parseDouble(foodEntry[9]), singleFood);
 				protein.insert(Double.parseDouble(foodEntry[11]), singleFood);
 
+				//Ensure that we do not missing any values 
 				boolean notDone = true;
 				for (int i = 0; i < foodItemList.size(); i++) {
 					String curFood = foodEntry[1].toLowerCase();
@@ -99,13 +122,16 @@ public class FoodData implements FoodDataADT<FoodItem> {
 			}
     }
     
-    /*
-     * (non-Javadoc)
-     * @see skeleton.FoodDataADT#filterByName(java.lang.String)
+    /**
+     * This method gets the food corresponding to their names containing the substring
+     * 
+     * @param substring substring that used to search the food
+     * @return filteredFood list of the filtered food items
      */
     @Override
     public List<FoodItem> filterByName(String substring) {
         List<FoodItem> filteredFood = new ArrayList<FoodItem> ();
+	//Traverses the list to match the food items and filter is case-insensitive
         for (int i = 0; i < foodItemList.size(); ++i) {
         	boolean exists = Pattern.compile(Pattern.quote(substring), Pattern.CASE_INSENSITIVE).matcher(foodItemList.get(i).getName()).find();
         	if (exists) {
@@ -116,9 +142,11 @@ public class FoodData implements FoodDataADT<FoodItem> {
     }
 
 
-    /*
-     * (non-Javadoc)
-     * @see skeleton.FoodDataADT#filterByNutrients(java.util.List)
+     /**
+     * This method gets the food items that fulfill the rules we defined
+     * 
+     * @param rules lists of rules
+     * @return result list of filtered food items 
      * FIXME: a bug exists because of the implementation of BPTree
      * Update: bug fixed
      */
@@ -208,6 +236,11 @@ public class FoodData implements FoodDataADT<FoodItem> {
 		
 	}
 	
+	/**
+	 * This methods translate data into strings
+	 * @param item the food item instance
+	 * @return str the string arranged by appropriate nutrients order
+	 */
 	private String foodItemToString(FoodItem item) {
 		String str = item.getID() + ",";
 		str += item.getName() + ",";
