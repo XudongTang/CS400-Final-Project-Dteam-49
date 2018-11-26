@@ -14,6 +14,7 @@
  * 
  * Bugs:       no known bugs, but not complete either
  */
+////////////////////////////////////////////////////////////////////////////////
 package application;
 
 import java.io.File;
@@ -76,29 +77,31 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	@Override
 	public void loadFoodItems(String filePath) {
 		Scanner scnr; // the scanner to iterate through the file
-		BPTree<Double, FoodItem> cal = new BPTree<Double, FoodItem>(4); // the "calories" BPTree
-		BPTree<Double, FoodItem> fat = new BPTree<Double, FoodItem>(4); // the "fat" BPTree
-		BPTree<Double, FoodItem> carbo = new BPTree<Double, FoodItem>(4); // the "carbohydrate" BPTree
-		BPTree<Double, FoodItem> fiber = new BPTree<Double, FoodItem>(4); // the "fiber" BPTree
-		BPTree<Double, FoodItem> protein = new BPTree<Double, FoodItem>(4); // the "protein" BPTree
+		//create the BPTree of different nutrients
+		BPTree<Double, FoodItem> cal = new BPTree<Double, FoodItem>(4); 
+		BPTree<Double, FoodItem> fat = new BPTree<Double, FoodItem>(4); 
+		BPTree<Double, FoodItem> carbo = new BPTree<Double, FoodItem>(4); 
+		BPTree<Double, FoodItem> fiber = new BPTree<Double, FoodItem>(4);
+		BPTree<Double, FoodItem> protein = new BPTree<Double, FoodItem>(4); 
 
 		try {
 			scnr = new Scanner(new File(filePath));
 			while (scnr.hasNext()) {
-				String[] foodEntry = scnr.nextLine().split(","); // array of information of each food item in one line
+				// array of information of each food item in one line
+				String[] foodEntry = scnr.nextLine().split(","); 
 				if (foodEntry.length < 12) {
 					continue;
 				}
-
-				FoodItem singleFood = new FoodItem(foodEntry[0], foodEntry[1]); // the new food item of each line
-				// create the new food item
+				// create the new food item 
+				FoodItem singleFood = new FoodItem(foodEntry[0], foodEntry[1]); 
+				// complete the nutrient content of each food item
 				singleFood.addNutrient("calories", Double.parseDouble(foodEntry[3]));
 				singleFood.addNutrient("fat", Double.parseDouble(foodEntry[5]));
 				singleFood.addNutrient("carbohydrate", Double.parseDouble(foodEntry[7]));
 				singleFood.addNutrient("fiber", Double.parseDouble(foodEntry[9]));
 				singleFood.addNutrient("protein", Double.parseDouble(foodEntry[11]));
 
-				// add new nutrition
+				// add nutrients to the BPTrees
 				cal.insert(Double.parseDouble(foodEntry[3]), singleFood);
 				fat.insert(Double.parseDouble(foodEntry[5]), singleFood);
 				carbo.insert(Double.parseDouble(foodEntry[7]), singleFood);
@@ -108,8 +111,10 @@ public class FoodData implements FoodDataADT<FoodItem> {
 				// sort the food item lists according to alphabetic order
 				boolean notDone = true; // check whether the food item is added to the list
 				for (int i = 0; i < foodItemList.size(); i++) {
-					String curFood = foodEntry[1].toLowerCase(); // the name of current food
-					String listFood = foodItemList.get(i).getName().toLowerCase(); // the name of the food in the food
+					// the name of current food
+					String curFood = foodEntry[1].toLowerCase();
+					// the name of the food at this index in the list
+					String listFood = foodItemList.get(i).getName().toLowerCase();
 																					// list
 					if (curFood.compareTo(listFood) < 0) {
 						foodItemList.add(i, singleFood);
@@ -149,8 +154,8 @@ public class FoodData implements FoodDataADT<FoodItem> {
 		if (substring == null) {
 			return new ArrayList<FoodItem>();
 		}
-		List<FoodItem> filteredFood = new ArrayList<FoodItem>(); // the new food item lists that have name containing
-																	// the substring
+		// the new food item lists that have name containing the substring
+		List<FoodItem> filteredFood = new ArrayList<FoodItem>(); 
 		for (int i = 0; i < foodItemList.size(); ++i) {
 			// checks whether this food containing the substring
 			boolean exists = Pattern.compile(Pattern.quote(substring), Pattern.CASE_INSENSITIVE)
@@ -172,30 +177,35 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	 */
 	@Override
 	public List<FoodItem> filterByNutrients(List<String> rules) {
-		List<FoodItem> result = new ArrayList<FoodItem>(); // list of filtered food items
+		// list of filtered food items
+		List<FoodItem> result = new ArrayList<FoodItem>(); 
 		// if there is no rule, return empty list
 		if (rules.isEmpty()) {
 			return result;
 		}
 
-		String[] basicRule = rules.get(0).split(" "); // the first rule string array
-		String nutrient_1 = basicRule[0]; // the first nutrition name of the first rule string array
-		String comparator_1 = basicRule[1]; // the first comparator of the first rule string array
-		Double value_1 = Double.parseDouble(basicRule[2]); // the first comparison value of the first rule string array
-		result = indexes.get(nutrient_1).rangeSearch(value_1, comparator_1); // do rangeSearch according to the first
-																				// rule string array
-
+		// the first rule string array
+		String[] basicRule = rules.get(0).split(" "); 
+		// the first nutrition name of the first rule string array
+		String nutrient_1 = basicRule[0]; 
+		// the first comparator of the first rule string array
+		String comparator_1 = basicRule[1]; 
+		// the first comparison value of the first rule string array
+		Double value_1 = Double.parseDouble(basicRule[2]); 
+		// do rangeSearch according to the first rule string array
+		result = indexes.get(nutrient_1).rangeSearch(value_1, comparator_1); 
 		// find the rest rule string arrays
 		for (int i = 1; i < rules.size(); i++) {
-			String[] rule = rules.get(i).split(" "); // the ith rule string array
-			String nutrient = rule[0]; // the ith nutrition name of the ith rule string array
-			String comparator = rule[1]; // the ith comparator of the ith rule string array
-			Double value = Double.parseDouble(rule[2]); // the ith comparison value of the ith rule string array
-			List<FoodItem> filtered = indexes.get(nutrient).rangeSearch(value, comparator); // do rangeSearch according
-																							// to the ith rule string
-																							// array
-			List<FoodItem> newResult = new ArrayList<>(); // the new list of filtered food items according to several
-															// rule
+			/ the ith rule string array
+			String[] rule = rules.get(i).split(" "); 
+			String nutrient = rule[0]; // the ith nutrition name
+			String comparator = rule[1]; // the ith comparator
+			// the ith comparison value of the ith rule string array
+			Double value = Double.parseDouble(rule[2]); 
+			// do rangeSearch according to the ith rule string array
+			List<FoodItem> filtered = indexes.get(nutrient).rangeSearch(value, comparator); 		
+			// the new list of filtered food items according to several rule
+			List<FoodItem> newResult = new ArrayList<>(); 
 
 			// combine two list according to several rules
 			for (FoodItem food : result) {
