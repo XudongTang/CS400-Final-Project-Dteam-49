@@ -1,7 +1,10 @@
 /**
  * Filename:   FoodData.java
  * Project:    Team Project
- * Authors:    Debra Deppeler, Xudong Tang, Yixian Gan, Yiye Dang, Daoxing Zhang, Qiuhong Li
+ * Authors:    Debra Deppeler, Xudong Tang, Yixian Gan, 
+ *		Yiye Dang, Daoxing Zhang, Qiuhong Li
+ * Emails:     xtang75@wisc.edu, ygan23@wisc.edu, dang6@wisc.edu, 
+ *		dzhang268@wisc.edu, qli288@wisc.edu
  *
  * Semester:   Fall 2018
  * Course:     CS400
@@ -10,11 +13,10 @@
  * Due Date:   Before 10pm on November 30, 2018
  * Version:    1.0
  * 
- * Credits:    NA
+ * Credits:    N/A
  * 
- * Bugs:       no known bugs, but not complete either
+ * Bugs:       no known bugs
  */
-////////////////////////////////////////////////////////////////////////////////
 package application;
 
 import java.io.File;
