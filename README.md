@@ -3,16 +3,16 @@
 ### Milestone 1
 - [x] Class Summary
 - [x] Class Diagrams
-- [] Object Diagram
+- [x] Object Diagram
 - [x] GUI layout Sketch
 ### Milestone 2
 - [x] GUI 
 ### Milestone 3
 #### TODO
-- [ ] filter by name
-- [ ] filter by nutrient
-- [ ] save file
-- [ ] anzlyze meal
-- [ ] remove meal list
-- [ ] update size
-- [ ] fix output file
+- [x] filter by name
+- [x] filter by nutrient
+- [x] save file
+- [x] anzlyze meal
+- [x] remove meal list
+- [x] update size
+- [x] fix output file
