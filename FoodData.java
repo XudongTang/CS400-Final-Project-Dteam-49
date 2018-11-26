@@ -242,7 +242,8 @@ public class FoodData implements FoodDataADT<FoodItem> {
 
 		// sort the food item lists according to alphabetic order
 		for (int i = 0; i < foodItemList.size(); i++) {
-			String listFood = foodItemList.get(i).getName().toLowerCase();// the name of the food in the food list
+			// the name of the food in the food list
+			String listFood = foodItemList.get(i).getName().toLowerCase();
 			if (curFood.compareTo(listFood) < 0) {
 				foodItemList.add(i, foodItem);
 				notDone = false;
@@ -273,9 +274,10 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	 */
 	@Override
 	public void saveFoodItems(String filename) {
-		File fileOutput = new File(filename); // the File object to save information
+		File fileOutput = new File(filename); // the File to save information
 		try {
-			PrintWriter outFS = new PrintWriter(fileOutput); // The PrintWriter object to print information
+			// The PrintWriter object to print information to file
+			PrintWriter outFS = new PrintWriter(fileOutput); 
 			// print all information of all food items
 			for (int i = 0; i < foodItemList.size(); i++) {
 				outFS.println(foodItemToString(foodItemList.get(i)));
