@@ -28,76 +28,89 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+
 /**
- * This class represents the back-end for managing all 
- * the operations associated with FoodItems
+ * This class represents all food data passed in by a .csv file containing all
+ * the information about one food item. All food items are stored in an
+ * arrayList. All nutrition are stored in a hash map This class also does some
+ * operations on the food items such as filter food items using some specific
+ * rules and show all the food items This class also save some food items into a
+ * text file.
  * 
- * @author sapan (sapan@cs.wisc.edu)
+ * @author Xudong Tang (xtang75@wisc.edu)
+ * @author Yixian Gan (ygan23@wisc.edu)
+ * @author Yiye Dang (dang6@wisc.edu)
+ * @author Daoxing Zhang (dzhang268@wisc.edu)
+ * @author Qiuhong Li (qli288@wisc.edu)
+ * 
  */
 public class FoodData implements FoodDataADT<FoodItem> {
-    
-    // List of all the food items.
-    private List<FoodItem> foodItemList;
 
-    // Map of nutrients and their corresponding index
-    private HashMap<String, BPTree<Double, FoodItem>> indexes;
+	// List of all the food items.
+	private List<FoodItem> foodItemList;
 
-    /**
-     * Public constructor
-     */
-    public FoodData() {
-	    	this.foodItemList = new ArrayList<FoodItem>();
-	    	this.indexes = new HashMap<String, BPTree<Double, FoodItem>>();
-    }
-    
-    
-     /**
-     * This method Loads the data into a fooditemList. 
-     * 
-     * @param filePath path of the food item data file
-     * @throws FileNotFoundException if the file does not exit
-     * 
-     */
-    @Override
-    public void loadFoodItems(String filePath) {
-			Scanner scnr;
-			int count = 0;
-			int foodIndex = 0;
-	   		//create BPTrees with branching factor of 3
-			BPTree<Double, FoodItem> cal = new BPTree<Double,FoodItem>(4);
-			BPTree<Double, FoodItem> fat = new BPTree<Double,FoodItem>(4);
-			BPTree<Double, FoodItem> carbo = new BPTree<Double,FoodItem>(4);
-			BPTree<Double, FoodItem> fiber = new BPTree<Double,FoodItem>(4);
-			BPTree<Double, FoodItem> protein = new BPTree<Double,FoodItem>(4);
+	// Map of nutrition and their corresponding index
+	private HashMap<String, BPTree<Double, FoodItem>> indexes;
 
-			try {
-				scnr = new Scanner(new File(filePath));
+	/**
+	 * Default constructor
+	 */
+	public FoodData() {
+		this.foodItemList = new ArrayList<FoodItem>();
+		this.indexes = new HashMap<String, BPTree<Double, FoodItem>>();
+	}
+
+	/**
+	 * This method deal with the information in the .csv file
+	 * 
+	 * It creates a single FoodItem according to the information in each line,
+	 * including the id, name, calories, fat, carbohydrate, fiber, protein. Then it
+	 * adds the single FoodItem into the foodItemList.
+	 * 
+	 * It also adds each nutrition to its corresponding nutrition BPTree. Then it
+	 * adds each nutrition BPTree to the indexes HashMap
+	 * 
+	 * @param filePath path of the food item data file (e.g.
+	 *                 folder1/subfolder1/.../foodItems.csv)
+	 */
+	@Override
+	public void loadFoodItems(String filePath) {
+		Scanner scnr; // the scanner to iterate through the file
+		BPTree<Double, FoodItem> cal = new BPTree<Double, FoodItem>(4); // the "calories" BPTree
+		BPTree<Double, FoodItem> fat = new BPTree<Double, FoodItem>(4); // the "fat" BPTree
+		BPTree<Double, FoodItem> carbo = new BPTree<Double, FoodItem>(4); // the "carbohydrate" BPTree
+		BPTree<Double, FoodItem> fiber = new BPTree<Double, FoodItem>(4); // the "fiber" BPTree
+		BPTree<Double, FoodItem> protein = new BPTree<Double, FoodItem>(4); // the "protein" BPTree
+
+		try {
+			scnr = new Scanner(new File(filePath));
 			while (scnr.hasNext()) {
-				String[] foodEntry = scnr.nextLine().split(",");
-				if (foodEntry.length == 0) {
+				String[] foodEntry = scnr.nextLine().split(","); // array of information of each food item in one line
+				if (foodEntry.length < 12) {
 					continue;
 				}
-				
-				//Adds nutrients and values to this food
-				FoodItem singleFood = new FoodItem(foodEntry[0], foodEntry[1]);
+
+				FoodItem singleFood = new FoodItem(foodEntry[0], foodEntry[1]); // the new food item of each line
+				// create the new food item
 				singleFood.addNutrient("calories", Double.parseDouble(foodEntry[3]));
 				singleFood.addNutrient("fat", Double.parseDouble(foodEntry[5]));
 				singleFood.addNutrient("carbohydrate", Double.parseDouble(foodEntry[7]));
 				singleFood.addNutrient("fiber", Double.parseDouble(foodEntry[9]));
 				singleFood.addNutrient("protein", Double.parseDouble(foodEntry[11]));
-				
-				//Inserts the key and value in the appropriate nodes in the tree
+
+				// add new nutrition
 				cal.insert(Double.parseDouble(foodEntry[3]), singleFood);
 				fat.insert(Double.parseDouble(foodEntry[5]), singleFood);
 				carbo.insert(Double.parseDouble(foodEntry[7]), singleFood);
 				fiber.insert(Double.parseDouble(foodEntry[9]), singleFood);
 				protein.insert(Double.parseDouble(foodEntry[11]), singleFood);
 
-				//Ensure that we do not missing any values 
-				boolean notDone = true;
+				// sort the food item lists according to alphabetic order
+				boolean notDone = true; // check whether the food item is added to the list
 				for (int i = 0; i < foodItemList.size(); i++) {
-					String curFood = foodEntry[1].toLowerCase();
-					String listFood = foodItemList.get(i).getName().toLowerCase();
+					String curFood = foodEntry[1].toLowerCase(); // the name of current food
+					String listFood = foodItemList.get(i).getName().toLowerCase(); // the name of the food in the food
+																					// list
 					if (curFood.compareTo(listFood) < 0) {
 						foodItemList.add(i, singleFood);
 						notDone = false;
@@ -109,90 +122,117 @@ public class FoodData implements FoodDataADT<FoodItem> {
 				}
 			}
 
-				scnr.close();
-				this.indexes.put("calories", cal);
-				this.indexes.put("fat", fat);
-				this.indexes.put("carbohydrate", carbo);
-				this.indexes.put("fiber", fiber);
-				this.indexes.put("protein", protein);
-		 
-//				System.out.print(foodItemList.get(foodItemList.size()-1).getName().toUpperCase());
-			}catch (FileNotFoundException e) {
-				e.printStackTrace();
+			scnr.close();
+			// add each nutrition BPTree into the indexes HashMap
+			this.indexes.put("calories", cal);
+			this.indexes.put("fat", fat);
+			this.indexes.put("carbohydrate", carbo);
+			this.indexes.put("fiber", fiber);
+			this.indexes.put("protein", protein);
+
+        //System.out.print(foodItemList.get(foodItemList.size()-1).getName().toUpperCase());
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * This method gets all the food items that have name containing the substring.
+	 * 
+	 * @see skeleton.FoodDataADT#filterByName(java.lang.String)
+	 * @param substring substring to be searched
+	 * @return list of filtered food items; if no food item matched, return empty
+	 *         list
+	 */
+	@Override
+	public List<FoodItem> filterByName(String substring) {
+		if (substring == null) {
+			return new ArrayList<FoodItem>();
+		}
+		List<FoodItem> filteredFood = new ArrayList<FoodItem>(); // the new food item lists that have name containing
+																	// the substring
+		for (int i = 0; i < foodItemList.size(); ++i) {
+			// checks whether this food containing the substring
+			boolean exists = Pattern.compile(Pattern.quote(substring), Pattern.CASE_INSENSITIVE)
+					.matcher(foodItemList.get(i).getName()).find();
+			if (exists) {
+				filteredFood.add(foodItemList.get(i));
 			}
-    }
-    
-    /**
-     * This method gets the food corresponding to their names containing the substring
-     * 
-     * @param substring substring that used to search the food
-     * @return filteredFood list of the filtered food items
-     */
-    @Override
-    public List<FoodItem> filterByName(String substring) {
-        List<FoodItem> filteredFood = new ArrayList<FoodItem> ();
-	//Traverses the list to match the food items and filter is case-insensitive
-        for (int i = 0; i < foodItemList.size(); ++i) {
-        	boolean exists = Pattern.compile(Pattern.quote(substring), Pattern.CASE_INSENSITIVE).matcher(foodItemList.get(i).getName()).find();
-        	if (exists) {
-        		filteredFood.add(foodItemList.get(i));
-        	}
-        }
-        return filteredFood;
-    }
+		}
+		return filteredFood;
+	}
 
+	/**
+	 * This method gets all the food items that fulfill ALL the provided rules
+	 * 
+	 * @see skeleton.FoodDataADT#filterByNutrients(java.util.List)
+	 * @param rules list of rules
+	 * @return list of filtered food items; if no food item matched, return empty
+	 *         list
+	 */
+	@Override
+	public List<FoodItem> filterByNutrients(List<String> rules) {
+		List<FoodItem> result = new ArrayList<FoodItem>(); // list of filtered food items
+		// if there is no rule, return empty list
+		if (rules.isEmpty()) {
+			return result;
+		}
 
-     /**
-     * This method gets the food items that fulfill the rules we defined
-     * 
-     * @param rules lists of rules
-     * @return result list of filtered food items 
-     * FIXME: a bug exists because of the implementation of BPTree
-     * Update: bug fixed
-     */
-    @Override
-    public List<FoodItem> filterByNutrients(List<String> rules) {
-    		List<FoodItem> result = new ArrayList<FoodItem> ();
-    		//illegal rule
-    		if(rules.isEmpty()) {return result;}
-    		
-    		String[] basicRule = rules.get(0).split(" ");
-			String nutrient_1 = basicRule[0];
-			String comparator_1 = basicRule[1];
-			Double value_1 = Double.parseDouble(basicRule[2]);
-			result = indexes.get(nutrient_1).rangeSearch(value_1, comparator_1);
-						
-			for(int i = 1; i < rules.size(); i++) {
-    			String[] rule = rules.get(i).split(" ");
-    			String nutrient = rule[0];
-    			String comparator = rule[1];
-    			Double value = Double.parseDouble(rule[2]);
-    			List<FoodItem> filtered = indexes.get(nutrient).rangeSearch(value, comparator);
-    			List<FoodItem> newResult = new ArrayList<>();
-    			System.out.println(filtered.size());
-    			for(FoodItem food : result) {
-    				if(filtered.contains(food)) {
-    					newResult.add(food);
-    				}
-    			}
-    			result = newResult;
-        		
-    		}
-        return result;
-    }
+		String[] basicRule = rules.get(0).split(" "); // the first rule string array
+		String nutrient_1 = basicRule[0]; // the first nutrition name of the first rule string array
+		String comparator_1 = basicRule[1]; // the first comparator of the first rule string array
+		Double value_1 = Double.parseDouble(basicRule[2]); // the first comparison value of the first rule string array
+		result = indexes.get(nutrient_1).rangeSearch(value_1, comparator_1); // do rangeSearch according to the first
+																				// rule string array
 
-    /*
-     * (non-Javadoc)
-     * @see skeleton.FoodDataADT#addFoodItem(skeleton.FoodItem)
-     * 
-     */
-    @Override
-    public void addFoodItem(FoodItem foodItem) {
-    	boolean notDone = true;
-		String curFood = foodItem.getName().toLowerCase();
+		// find the rest rule string arrays
+		for (int i = 1; i < rules.size(); i++) {
+			String[] rule = rules.get(i).split(" "); // the ith rule string array
+			String nutrient = rule[0]; // the ith nutrition name of the ith rule string array
+			String comparator = rule[1]; // the ith comparator of the ith rule string array
+			Double value = Double.parseDouble(rule[2]); // the ith comparison value of the ith rule string array
+			List<FoodItem> filtered = indexes.get(nutrient).rangeSearch(value, comparator); // do rangeSearch according
+																							// to the ith rule string
+																							// array
+			List<FoodItem> newResult = new ArrayList<>(); // the new list of filtered food items according to several
+															// rule
 
+			// combine two list according to several rules
+			for (FoodItem food : result) {
+				if (filtered.contains(food)) {
+					newResult.add(food);
+				}
+			}
+			result = newResult;
+
+		}
+		return result;
+	}
+
+	/**
+	 * Adds a food item to the loaded data.
+	 * 
+	 * @see skeleton.FoodDataADT#addFoodItem(skeleton.FoodItem)
+	 * @param foodItem the food item instance to be added
+	 */
+	@Override
+	public void addFoodItem(FoodItem foodItem) {
+		if (foodItem == null) {
+			return;
+		}
+		boolean notDone = true; // check whether the food is added to the food list
+		String curFood = foodItem.getName().toLowerCase(); // the name of current food
+
+		// add the nutrition to the indexes
+		indexes.get("calories").insert(foodItem.getNutrientValue("calories"), foodItem);
+		indexes.get("fat").insert(foodItem.getNutrientValue("fat"), foodItem);
+		indexes.get("carbohydrate").insert(foodItem.getNutrientValue("carbohydrate"), foodItem);
+		indexes.get("fiber").insert(foodItem.getNutrientValue("fiber"), foodItem);
+		indexes.get("protein").insert(foodItem.getNutrientValue("protein"), foodItem);
+
+		// sort the food item lists according to alphabetic order
 		for (int i = 0; i < foodItemList.size(); i++) {
-			String listFood = foodItemList.get(i).getName().toLowerCase();
+			String listFood = foodItemList.get(i).getName().toLowerCase();// the name of the food in the food list
 			if (curFood.compareTo(listFood) < 0) {
 				foodItemList.add(i, foodItem);
 				notDone = false;
@@ -202,27 +242,31 @@ public class FoodData implements FoodDataADT<FoodItem> {
 		if (notDone) {
 			foodItemList.add(foodItem);
 		}
-    }
+	}
 
-    /*
-     * (non-Javadoc)
-     * @see skeleton.FoodDataADT#getAllFoodItems()
-     */
-    @Override
-    public List<FoodItem> getAllFoodItems() {
-        return foodItemList;
-    }
+	/**
+	 * Gets the list of all food items.
+	 * 
+	 * @see skeleton.FoodDataADT#getAllFoodItems()
+	 * @return list of FoodItem
+	 */
+	@Override
+	public List<FoodItem> getAllFoodItems() {
+		return foodItemList;
+	}
 
-
-    /*
-     * (non-Javadoc)
-     * @see skeleton.FoodDataADT#saveFoodItems(java.lang.String)
-     */
+	/**
+	 * Save the list of food items in ascending order by name
+	 * 
+	 * @see skeleton.FoodDataADT#saveFoodItems(java.lang.String)
+	 * @param filename name of the file where the data needs to be saved
+	 */
 	@Override
 	public void saveFoodItems(String filename) {
-		File fileOutput = new File(filename);
+		File fileOutput = new File(filename); // the File object to save information
 		try {
-			PrintWriter outFS = new PrintWriter(fileOutput);
+			PrintWriter outFS = new PrintWriter(fileOutput); // The PrintWriter object to print information
+			// print all information of all food items
 			for (int i = 0; i < foodItemList.size(); i++) {
 				outFS.println(foodItemToString(foodItemList.get(i)));
 			}
@@ -230,19 +274,21 @@ public class FoodData implements FoodDataADT<FoodItem> {
 			outFS.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 	/**
-	 * This methods translate data into strings
-	 * @param item the food item instance
-	 * @return str the string arranged by appropriate nutrients order
+	 * The private helper method that returns all the information of a single food
+	 * item including the id, name, calories, fat, carbohydrate, fiber, protein.
+	 * 
+	 * @param item the specific food item
+	 * @return the information of a single food item
 	 */
 	private String foodItemToString(FoodItem item) {
-		String str = item.getID() + ",";
+		String str = item.getID() + ","; // the information of a single food item
 		str += item.getName() + ",";
 		str += "calories," + item.getNutrientValue("calories");
 		str += ",fat," + item.getNutrientValue("fat");
@@ -251,39 +297,39 @@ public class FoodData implements FoodDataADT<FoodItem> {
 		str += ",protein," + item.getNutrientValue("protein");
 		return str;
 	}
-	
-	public static void main(String[] args) {
-		FoodData data = new FoodData();
-		data.loadFoodItems("foodItems.csv");
-//		for (int i = 0; i < data.foodItemList.size(); i++) {
-//			System.out.println(data.foodItemList.get(i).getName());
+
+//	public static void main(String[] args) {
+//		FoodData data = new FoodData();
+//		data.loadFoodItems("foodItems.csv");
+////		for (int i = 0; i < data.foodItemList.size(); i++) {
+////			System.out.println(data.foodItemList.get(i).getName());
+////		}
+//		
+////		List<FoodItem> nameFilter = data.filterByName("ee");
+////		for (int i = 0; i < nameFilter.size(); i++) {
+////			System.out.println(nameFilter.get(i).getName());
+////		}
+////		
+//		
+////		FoodItem newfood = new FoodItem("007","Cola");
+////		data.addFoodItem(newfood);
+////		HashMap<String, Double> nutrients = new HashMap<String, Double>();
+////		nutrients.put("calories", 20.0);
+////		nutrients.put("fat", 20.0);
+////		nutrients.put("carbohydrate", 20.0);
+////		nutrients.put("fiber", 20.0);
+////		nutrients.put("protein", 20.0);
+//		
+//		List<String> rules = new ArrayList<String>();
+//		rules.add("calories >= 15");
+////		
+//		List<FoodItem> nutrientFilter = data.filterByNutrients(rules);
+//		for (int i = 0; i < nutrientFilter.size(); i++) {
+//			System.out.println(nutrientFilter.get(i).getName());
 //		}
-		
-//		List<FoodItem> nameFilter = data.filterByName("ee");
-//		for (int i = 0; i < nameFilter.size(); i++) {
-//			System.out.println(nameFilter.get(i).getName());
-//		}
-//		
-		
-//		FoodItem newfood = new FoodItem("007","Cola");
-//		data.addFoodItem(newfood);
-//		HashMap<String, Double> nutrients = new HashMap<String, Double>();
-//		nutrients.put("calories", 20.0);
-//		nutrients.put("fat", 20.0);
-//		nutrients.put("carbohydrate", 20.0);
-//		nutrients.put("fiber", 20.0);
-//		nutrients.put("protein", 20.0);
-		
-		List<String> rules = new ArrayList<String>();
-		rules.add("calories >= 15");
-//		
-		List<FoodItem> nutrientFilter = data.filterByNutrients(rules);
-		for (int i = 0; i < nutrientFilter.size(); i++) {
-			System.out.println(nutrientFilter.get(i).getName());
-		}
-//		
-//		data.saveFoodItems("sorted.txt");
-	}
-	
+////		
+////		data.saveFoodItems("sorted.txt");
+//	}
+//	
 
 }

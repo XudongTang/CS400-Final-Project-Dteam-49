@@ -1,3 +1,30 @@
+/**
+ * Filename:   FoodItem.java
+ * Project:    Team Project
+ * Authors:    Debra Deppeler, Xudong Tang, Yixian Gan, Yiye Dang, Daoxing Zhang, Qiuhong Li
+ *
+ * Semester:   Fall 2018
+ * Course:     CS400
+ * Lecture:    lec001
+ * 
+ * Due Date:   Before 10pm on November 30, 2018
+ * Version:    1.0
+ * 
+ * Credits:    NA
+ * 
+ * Bugs:       no known bugs, but not complete either
+ */
+
+/**
+ * This is a data structure class to store the information of a single food item
+ * 
+ * @author Xudong Tang (xtang75@wisc.edu)
+ * @author Yixian Gan (ygan23@wisc.edu)
+ * @author Yiye Dang (dang6@wisc.edu)
+ * @author Daoxing Zhang (dzhang268@wisc.edu)
+ * @author Qiuhong Li (qli288@wisc.edu)
+ */
+
 package application;
 
 import java.util.ArrayList;
@@ -16,7 +43,7 @@ public class FoodItem {
     // The id of the food item.
     private String id;
 
-    // Map of nutrients and value.
+    // Map of nutrition and value.
     private HashMap<String, Double> nutrients;
     
     /**
@@ -49,24 +76,24 @@ public class FoodItem {
     }
     
     /**
-     * Gets the nutrients of the food item
+     * Gets the nutrition of the food item
      * 
-     * @return nutrients of the food item
+     * @return nutrition of the food item
      */
     public HashMap<String, Double> getNutrients() {
         return this.nutrients;
     }
 
     /**
-     * Adds a nutrient and its value to this food. 
-     * If nutrient already exists, updates its value.
+     * Adds a nutrition and its value to this food. 
+     * If nutrition already exists, updates its value.
      */
     public void addNutrient(String name, double value) {
     		nutrients.put(name, value);
     }
 
     /**
-     * Returns the value of the given nutrient for this food item. 
+     * Returns the value of the given nutrition for this food item. 
      * If not present, then returns 0.
      */
     public double getNutrientValue(String name) {
