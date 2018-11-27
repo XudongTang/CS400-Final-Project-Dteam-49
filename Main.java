@@ -668,28 +668,21 @@ public class Main extends Application implements EventHandler<ActionEvent>{
 	private ArrayList<String> convert(java.util.List<FoodItem> list) {
 		ArrayList<String> foodList = new ArrayList<>(); 
 		for (int i = 0; i < list.size(); i++) {
-			foodList.add(list.get(i).getName());
+			foodList.add(i+1 + ". " + list.get(i).getName());
 		}
 			 
 		 return foodList;
 	 }
 	
 	private List<FoodItem> sort (java.util.List<FoodItem> list) {
-		List<FoodItem> sortedList = new ArrayList<>();
-		 for (int i = 0; i < list.size(); i++) {
-			 FoodItem curFood = list.get(i);
-			 boolean notDone = true;
-			 for (int j = 0; j < sortedList.size(); j++) {
-				 if(curFood.getName().toLowerCase()
-						 .compareTo(sortedList.get(j).getName().toLowerCase()) < 0) {
-					 sortedList.add(j, curFood);
-					 notDone = false;
-					 break;
-				 }
-			 }
-			 if (notDone) {sortedList.add(curFood);}
-		 }
-		 return sortedList;
+		// sort the food item lists according to alphabetic order
+		Collections.sort(list, new Comparator<FoodItem>() {
+			@Override
+			public int compare(FoodItem food1, FoodItem food2) {
+		        return food1.getName().toLowerCase().compareTo(food2.getName().toLowerCase());
+		    };
+		});
+		return list;
 	 }
 	
 	private void update (java.util.List<FoodItem> list) {
