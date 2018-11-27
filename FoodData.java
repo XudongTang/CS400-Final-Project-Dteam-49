@@ -20,7 +20,6 @@
 package application;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -54,7 +53,14 @@ public class FoodData implements FoodDataADT<FoodItem> {
 
 	// Map of nutrition and their corresponding index
 	private HashMap<String, BPTree<Double, FoodItem>> indexes;
-
+	
+	// Comparator that helps to sort the list
+    private static final Comparator<FoodItem> FOOF_COMPARATOR = new Comparator<FoodItem>() {
+		@Override
+		public int compare(FoodItem food1, FoodItem food2) {
+	        return food1.getName().toLowerCase().compareTo(food2.getName().toLowerCase());
+	    };
+    };
 	/**
 	 * Default constructor
 	 */
@@ -110,34 +116,21 @@ public class FoodData implements FoodDataADT<FoodItem> {
 				fiber.insert(Double.parseDouble(foodEntry[9]), singleFood);
 				protein.insert(Double.parseDouble(foodEntry[11]), singleFood);
 
-				// sort the food item lists according to alphabetic order
-				boolean notDone = true; // check whether the food item is added to the list
-				for (int i = 0; i < foodItemList.size(); i++) {
-					// the name of current food
-					String curFood = foodEntry[1].toLowerCase();
-					// the name of the food at this index in the list
-					String listFood = foodItemList.get(i).getName().toLowerCase();
-																					// list
-					if (curFood.compareTo(listFood) < 0) {
-						foodItemList.add(i, singleFood);
-						notDone = false;
-						break;
-					}
-				}
-				if (notDone) {
-					foodItemList.add(singleFood);
-				}
+				// add the food item
+				foodItemList.add(singleFood);
+				
 			}
-
-			scnr.close();
+			// sort the food item lists according to alphabetic order
+			Collections.sort(foodItemList, FOOF_COMPARATOR );
+	
 			// add each nutrition BPTree into the indexes HashMap
 			this.indexes.put("calories", cal);
 			this.indexes.put("fat", fat);
 			this.indexes.put("carbohydrate", carbo);
 			this.indexes.put("fiber", fiber);
 			this.indexes.put("protein", protein);
-
-        //System.out.print(foodItemList.get(foodItemList.size()-1).getName().toUpperCase());
+			
+			scnr.close();//close the scanner
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -198,7 +191,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
 		result = indexes.get(nutrient_1).rangeSearch(value_1, comparator_1); 
 		// find the rest rule string arrays
 		for (int i = 1; i < rules.size(); i++) {
-			/ the ith rule string array
+			// the ith rule string array
 			String[] rule = rules.get(i).split(" "); 
 			String nutrient = rule[0]; // the ith nutrition name
 			String comparator = rule[1]; // the ith comparator
@@ -232,8 +225,6 @@ public class FoodData implements FoodDataADT<FoodItem> {
 		if (foodItem == null) {
 			return;
 		}
-		boolean notDone = true; // check whether the food is added to the food list
-		String curFood = foodItem.getName().toLowerCase(); // the name of current food
 
 		// add the nutrition to the indexes
 		indexes.get("calories").insert(foodItem.getNutrientValue("calories"), foodItem);
@@ -242,19 +233,10 @@ public class FoodData implements FoodDataADT<FoodItem> {
 		indexes.get("fiber").insert(foodItem.getNutrientValue("fiber"), foodItem);
 		indexes.get("protein").insert(foodItem.getNutrientValue("protein"), foodItem);
 
+		// add the food item
+		foodItemList.add(foodItem);
 		// sort the food item lists according to alphabetic order
-		for (int i = 0; i < foodItemList.size(); i++) {
-			// the name of the food in the food list
-			String listFood = foodItemList.get(i).getName().toLowerCase();
-			if (curFood.compareTo(listFood) < 0) {
-				foodItemList.add(i, foodItem);
-				notDone = false;
-				break;
-			}
-		}
-		if (notDone) {
-			foodItemList.add(foodItem);
-		}
+		Collections.sort(foodItemList, FOOF_COMPARATOR );
 	}
 
 	/**
@@ -282,6 +264,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
 			PrintWriter outFS = new PrintWriter(fileOutput); 
 			// print all information of all food items
 			for (int i = 0; i < foodItemList.size(); i++) {
+				System.out.println(foodItemToString(foodItemList.get(i)));
 				outFS.println(foodItemToString(foodItemList.get(i)));
 			}
 			outFS.flush();
@@ -312,38 +295,5 @@ public class FoodData implements FoodDataADT<FoodItem> {
 		return str;
 	}
 
-//	public static void main(String[] args) {
-//		FoodData data = new FoodData();
-//		data.loadFoodItems("foodItems.csv");
-////		for (int i = 0; i < data.foodItemList.size(); i++) {
-////			System.out.println(data.foodItemList.get(i).getName());
-////		}
-//		
-////		List<FoodItem> nameFilter = data.filterByName("ee");
-////		for (int i = 0; i < nameFilter.size(); i++) {
-////			System.out.println(nameFilter.get(i).getName());
-////		}
-////		
-//		
-////		FoodItem newfood = new FoodItem("007","Cola");
-////		data.addFoodItem(newfood);
-////		HashMap<String, Double> nutrients = new HashMap<String, Double>();
-////		nutrients.put("calories", 20.0);
-////		nutrients.put("fat", 20.0);
-////		nutrients.put("carbohydrate", 20.0);
-////		nutrients.put("fiber", 20.0);
-////		nutrients.put("protein", 20.0);
-//		
-//		List<String> rules = new ArrayList<String>();
-//		rules.add("calories >= 15");
-////		
-//		List<FoodItem> nutrientFilter = data.filterByNutrients(rules);
-//		for (int i = 0; i < nutrientFilter.size(); i++) {
-//			System.out.println(nutrientFilter.get(i).getName());
-//		}
-////		
-////		data.saveFoodItems("sorted.txt");
-//	}
-//	
-
 }
+
