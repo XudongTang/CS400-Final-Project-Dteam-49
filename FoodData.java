@@ -55,7 +55,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	private HashMap<String, BPTree<Double, FoodItem>> indexes;
 	
 	// Comparator that helps to sort the list
-    private static final Comparator<FoodItem> FOOF_COMPARATOR = new Comparator<FoodItem>() {
+    private static final Comparator<FoodItem> FOOD_COMPARATOR = new Comparator<FoodItem>() {
 		@Override
 		public int compare(FoodItem food1, FoodItem food2) {
 	        return food1.getName().toLowerCase().compareTo(food2.getName().toLowerCase());
@@ -121,7 +121,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
 				
 			}
 			// sort the food item lists according to alphabetic order
-			Collections.sort(foodItemList, FOOF_COMPARATOR );
+			Collections.sort(foodItemList, FOOD_COMPARATOR );
 	
 			// add each nutrition BPTree into the indexes HashMap
 			this.indexes.put("calories", cal);
@@ -236,7 +236,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
 		// add the food item
 		foodItemList.add(foodItem);
 		// sort the food item lists according to alphabetic order
-		Collections.sort(foodItemList, FOOF_COMPARATOR );
+		Collections.sort(foodItemList, FOOD_COMPARATOR );
 	}
 
 	/**
