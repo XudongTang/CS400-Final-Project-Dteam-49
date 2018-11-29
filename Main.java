@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
+
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -373,6 +375,7 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 							popUp.close();
 						} catch (NumberFormatException e2) {
 							try {
+								warn.setTextFill(Color.RED);
 								load1.add(warn, 2, 4);
 							} catch (IllegalArgumentException e3) {
 
@@ -515,12 +518,20 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 			Label protein = new Label("Protein:");
 			TextField userProtein = new TextField();
 			Label warn = new Label("Invalid input");
+			warn.setTextFill(Color.RED);
+			
 			gridSetCol(load, new Label[] {id, name, calorie, fat, carb, fiber, protein }, 0);
 			gridSetCol(load, new TextField[] { userID, userName, userCal, userFat, userCarbo, userFiber, userProtein },
 					1);
-
+			Button gen = new Button ("Generate ID");
+			load.add(gen, 0, 8);
+			gen.setOnAction(new EventHandler<ActionEvent>() {
+				public void handle(ActionEvent x) {
+					userID.setText(idGenerator());
+				}
+			});
 			Button upload = new Button("UPLOAD");
-			load.add(upload, 0, 8);
+			load.add(upload, 1, 8);
 			upload.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent x) {
 					String id1 = userID.getText();
@@ -538,14 +549,14 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 							dialog.close();
 						} catch (Exception e) {
 							try {
-								load.add(warn, 1, 8);
+								load.add(warn, 2, 8);
 							} catch (IllegalArgumentException e1) {
 
 							}
 						}
 					} else {
 						try {
-							load.add(warn, 1, 8);
+							load.add(warn, 2, 8);
 						} catch (IllegalArgumentException e) {
 
 						}
@@ -627,6 +638,41 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 		ObservableList<String> updateList = FXCollections.observableArrayList(convert(list));
 		list1.setItems(updateList);
 		label3.setText(String.format("Number of Food: %d", foods.getAllFoodItems().size()));
+	}
+	
+	private String idGenerator () {
+		Random rand1 = new Random();
+		Random rand2 = new Random();
+		Random rand3 = new Random();
+		String id = "";
+		char letter = 0;
+		int randomNum = 0;
+		int randomLetter = 0;
+		int choose = 0;
+		do {
+			for (int i = 0; i < 24; ++i) {
+		         choose = rand3.nextInt((2 - 1) + 1) + 1;
+					if (choose == 1) {
+		            randomNum = rand1.nextInt((57 - 48) + 1) + 48;
+						letter = (char)randomNum;
+						id += Character.toString(letter);
+					} else {
+		            randomLetter = rand2.nextInt((122 - 97) + 1) + 97;
+						letter = (char)randomLetter;
+						id += Character.toString(letter);
+					}
+				}
+		} while (!checkIDDuplicate(id)); 
+		return id;
+	}
+	
+	private boolean checkIDDuplicate(String id) {
+		for (int i = 0; i < foods.getAllFoodItems().size(); ++i) {
+			if (id.equals(foods.getAllFoodItems().get(i).getID())) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private void setSize(Button button, int width, int height) {
