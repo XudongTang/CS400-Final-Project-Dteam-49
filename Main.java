@@ -734,6 +734,7 @@ public class Main extends Application{
 					userTextField.setText(filePath.toString());
 				}
 			});
+			foods = new FoodData(); //clear the food list first
 			// upload the file and update the food list view
 			upload.setOnAction(x -> {
 				if (!userTextField.getText().isEmpty()) {
