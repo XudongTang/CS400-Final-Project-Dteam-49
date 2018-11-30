@@ -572,14 +572,14 @@ public class Main extends Application{
 							dialog.close();
 						} catch (Exception e) {
 							try {
-								load.add(warn, 2, 8);
+								load.add(warn, 1, 9);
 							} catch (IllegalArgumentException e1) {
 
 							}
 						}
 					} else {
 						try {
-							load.add(warn, 2, 8);
+							load.add(warn, 1, 9);
 						} catch (IllegalArgumentException e) {
 
 						}
@@ -587,7 +587,7 @@ public class Main extends Application{
 					update(foods.getAllFoodItems());
 				}
 			});
-			Scene dialogScene = new Scene(load, 400, 400);
+			Scene dialogScene = new Scene(load, 400, 500);
 			dialog.setScene(dialogScene);
 			dialog.show();
 		});
