@@ -1,3 +1,23 @@
+/**
+ * Filename:   Main.java
+ * Project:    Team Project
+ * Authors:    Debra Deppeler, Xudong Tang, Yixian Gan, 
+ *			Yiye Dang, Daoxing Zhang, Qiuhong Li
+ * Emails:     xtang75@wisc.edu, ygan23@wisc.edu, dang6@wisc.edu, 
+ *			dzhang268@wisc.edu, qli288@wisc.edu
+ *
+ * Semester:   Fall 2018
+ * Course:     CS400
+ * Lecture:    lec001
+ * 
+ * Due Date:   Before 10pm on November 30, 2018
+ * Version:    1.0
+ * 
+ * Credits:    N/A
+ * 
+ * Bugs:       no known bugs
+ */
+
 package application;
 
 import java.io.File;
@@ -40,8 +60,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.geometry.Insets;
 
-public class Main extends Application implements EventHandler<ActionEvent> {
-
+public class Main extends Application{
+	
 	private FoodData foods = new FoodData();
 	private ObservableList<String> items1 = FXCollections.observableArrayList();
 	private ObservableList<String> items2 = FXCollections.observableArrayList();
@@ -109,8 +129,8 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 			vboxButton.setSpacing(40);
 			vboxButton.setPrefSize(200, 50);
 			vboxButton.setAlignment(Pos.CENTER);
-			vboxButton.getChildren().addAll(loadFoodButton, addFoodButton, nameFilterButton, nutrientFilterButton,
-					saveButton);
+			vboxButton.getChildren().addAll(loadFoodButton, addFoodButton, 
+					nameFilterButton, nutrientFilterButton, saveButton);
 
 			// food list
 			vboxFoodList.setPrefWidth(200);
@@ -123,7 +143,8 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 			vboxMealList.setPadding(new Insets(50, 50, 0, 50));
 			vboxMealList.setAlignment(Pos.CENTER_RIGHT);
 			vboxMealList.setMargin(helpButton, new Insets(20, 0, 0, 0));
-			vboxMealList.getChildren().addAll(label2, list2, new HBox(analyzeButton, removeButton), helpButton);
+			vboxMealList.getChildren().addAll(label2, list2, 
+					new HBox(analyzeButton, removeButton), helpButton);
 
 			// main pane
 			mainPane.setLeft(vboxFoodList);
@@ -367,7 +388,8 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 					submit.setOnAction(y -> {
 						try {
 							String curRule = null;
-							curRule = combo1.getValue() + " " + combo2.getValue() + " " + number.getText();
+							curRule = combo1.getValue() + " " + 
+									combo2.getValue() + " " + number.getText();
 							Double.parseDouble(number.getText());
 							rule.add(curRule);
 							ObservableList<String> showRule = FXCollections.observableArrayList(rule);
@@ -520,9 +542,10 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 			Label warn = new Label("Invalid input");
 			warn.setTextFill(Color.RED);
 			
-			gridSetCol(load, new Label[] {id, name, calorie, fat, carb, fiber, protein }, 0);
-			gridSetCol(load, new TextField[] { userID, userName, userCal, userFat, userCarbo, userFiber, userProtein },
-					1);
+			gridSetCol(load, new Label[] {id, name, calorie, fat, 
+					carb, fiber, protein }, 0);
+			gridSetCol(load, new TextField[] { userID, userName, userCal, 
+					userFat, userCarbo, userFiber, userProtein }, 1);
 			Button gen = new Button ("Generate ID");
 			load.add(gen, 0, 8);
 			gen.setOnAction(new EventHandler<ActionEvent>() {
@@ -637,7 +660,8 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 	private void update(java.util.List<FoodItem> list) {
 		ObservableList<String> updateList = FXCollections.observableArrayList(convert(list));
 		list1.setItems(updateList);
-		label3.setText(String.format("Number of Food: %d", foods.getAllFoodItems().size()));
+		label3.setText(String.format("Number of Food: %d", 
+				foods.getAllFoodItems().size()));
 	}
 	
 	private String idGenerator () {
@@ -698,11 +722,5 @@ public class Main extends Application implements EventHandler<ActionEvent> {
 	public static void main(String[] args) {
 		launch(args);
 	}
-
-	@Override
-	public void handle(ActionEvent event) {
-		// TODO Auto-generated method stub
-
-	}
-
+	
 }
