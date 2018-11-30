@@ -75,17 +75,26 @@ import javafx.geometry.Insets;
  * 
  */
 public class Main extends Application{
+	//initialize all the variables
 	
-	//initialized all the variables
+	//creates food items that stored in an arrayList.
 	private FoodData foods = new FoodData();
+	
+	//list that change dynamics when file change
 	private ObservableList<String> items1 = FXCollections.observableArrayList();
 	private ObservableList<String> items2 = FXCollections.observableArrayList();
+	
+	//display a list
 	private ListView<String> list1 = new ListView<String>();
 	private ListView<String> list2 = new ListView<String>();
+	
+	//creates list of food items for meallist and filter and rule
 	private List<FoodItem> mealList = new ArrayList<FoodItem>();
 	private List<FoodItem> filterNut = new ArrayList<FoodItem>();
 	private List<String> rule = new ArrayList<String>();
 	private Label label3 = new Label("Number of Food: ");
+	
+	//set up specific int for designing scenes
 	private final int SMALL_POPUP_WIDTH = 300;
 	private final int SMALL_POPUP_HEIGHT = 200;
 	private final int BIG_POPUP_WIDTH = 400;
@@ -102,6 +111,7 @@ public class Main extends Application{
 	@SuppressWarnings("static-access")
 	@Override
 	public void start(Stage primaryStage) {
+		//set names for each button
 		Button loadFoodButton = new Button("Load Additional Food");
 		Button addFoodButton = new Button("Add Food");
 		Button nameFilterButton = new Button("Name Filter");
@@ -182,8 +192,12 @@ public class Main extends Application{
 	}
 
 	/**
-	 * @param primaryStage
-	 * @param helpButton
+	 * This method creates Button in the purpose of helping. 
+	 * When clicking the help button, it will pop up a help
+	 * scence for user
+	 * 
+	 * @param primaryStage the original stage
+	 * @param helpButton the button for help
 	 */
 	private void createHelpButton(Stage primaryStage, Button helpButton) {
 		setSize(helpButton, 100, 30);
@@ -209,10 +223,16 @@ public class Main extends Application{
 	}
 
 	/**
-	 * @param removeButton
+	 * This method creates button to remove food from
+	 * current meal list
+	 * 
+	 * 
+	 * @param removeButton the button use to remove thing
 	 */
 	private void createRemoveButton(Button removeButton) {
 		setSize(removeButton, 100, 50);
+		
+		//The button's action, which is invoked whenever the button is fired.
 		removeButton.setOnAction(x -> {
 			ObservableList<Integer> index = list2.getSelectionModel().getSelectedIndices();
 			for (int i = index.size() - 1; i > -1; i--) {
@@ -224,9 +244,12 @@ public class Main extends Application{
 			list2.setItems(items2);
 		});
 	}
+	
 
 	/**
-	 * @param addToMealButton
+	 * This method creates button that adds food to meal ist
+	 * 
+	 * @param addToMealButton the button to adds food
 	 */
 	private void createAddToMealButton(Button addToMealButton) {
 		setSize(addToMealButton, 200, 50);
@@ -242,8 +265,11 @@ public class Main extends Application{
 	}
 
 	/**
-	 * @param primaryStage
-	 * @param analyzeButton
+	 * This method creates button to analyze the food items
+	 * in the meal list
+	 * 
+	 * @param primaryStage the original stage
+	 * @param analyzeButton the button use to analyze food when clicked
 	 */
 	private void createAnalyzeButton(Stage primaryStage, Button analyzeButton) {
 		setSize(analyzeButton, 100, 50);
