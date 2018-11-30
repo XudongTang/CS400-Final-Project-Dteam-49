@@ -60,8 +60,23 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.geometry.Insets;
 
+/**
+ * This class 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * @author Xudong Tang (xtang75@wisc.edu)
+ * @author Yixian Gan (ygan23@wisc.edu)
+ * @author Yiye Dang (dang6@wisc.edu)
+ * @author Daoxing Zhang (dzhang268@wisc.edu)
+ * @author Qiuhong Li (qli288@wisc.edu)
+ * 
+ */
 public class Main extends Application{
 	
+	//initialized all the variables
 	private FoodData foods = new FoodData();
 	private ObservableList<String> items1 = FXCollections.observableArrayList();
 	private ObservableList<String> items2 = FXCollections.observableArrayList();
@@ -76,6 +91,14 @@ public class Main extends Application{
 	private final int BIG_POPUP_WIDTH = 400;
 	private final int BIG_POPUP_HEIGHT = 600;
 
+	/**
+	 * This method builds the GUI controls,including 
+	 * creating buttons, layout and scenes. It also creates 
+	 * lists for button, food, and meal, and specifies the size,
+	 * height, margin and alignment for the lists
+	 * 
+	 * @param primaryStage the original stage 
+	 */
 	@SuppressWarnings("static-access")
 	@Override
 	public void start(Stage primaryStage) {
