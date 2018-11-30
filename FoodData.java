@@ -2,9 +2,9 @@
  * Filename:   FoodData.java
  * Project:    Team Project
  * Authors:    Debra Deppeler, Xudong Tang, Yixian Gan, 
- *		Yiye Dang, Daoxing Zhang, Qiuhong Li
+ *			Yiye Dang, Daoxing Zhang, Qiuhong Li
  * Emails:     xtang75@wisc.edu, ygan23@wisc.edu, dang6@wisc.edu, 
- *		dzhang268@wisc.edu, qli288@wisc.edu
+ *			dzhang268@wisc.edu, qli288@wisc.edu
  *
  * Semester:   Fall 2018
  * Course:     CS400
@@ -17,6 +17,7 @@
  * 
  * Bugs:       no known bugs
  */
+
 package application;
 
 import java.io.File;
@@ -32,11 +33,12 @@ import java.util.regex.Pattern;
 
 
 /**
- * This class represents all food data passed in by a .csv file containing all
- * the information about one food item. All food items are stored in an
- * arrayList. All nutrition are stored in a hash map This class also does some
- * operations on the food items such as filter food items using some specific
- * rules and show all the food items This class also save some food items into a
+ * This class represents all food data passed in by a .csv file 
+ * containing all the information about one food item. All food 
+ * items are stored in an arrayList. All nutrition are stored in 
+ * a hash map This class also does some operations on the food items
+ * such as filter food items using some specific rules and show 
+ * all the food items This class also save some food items into a
  * text file.
  * 
  * @author Xudong Tang (xtang75@wisc.edu)
@@ -73,11 +75,11 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	 * This method deal with the information in the .csv file
 	 * 
 	 * It creates a single FoodItem according to the information in each line,
-	 * including the id, name, calories, fat, carbohydrate, fiber, protein. Then it
-	 * adds the single FoodItem into the foodItemList.
+	 * including the id, name, calories, fat, carbohydrate, fiber, protein. 
+	 * Then it adds the single FoodItem into the foodItemList.
 	 * 
-	 * It also adds each nutrition to its corresponding nutrition BPTree. Then it
-	 * adds each nutrition BPTree to the indexes HashMap
+	 * It also adds each nutrition to its corresponding nutrition BPTree. 
+	 * Then it adds each nutrition BPTree to the indexes HashMap
 	 * 
 	 * @param filePath path of the food item data file (e.g.
 	 *                 folder1/subfolder1/.../foodItems.csv)
@@ -258,13 +260,13 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	 */
 	@Override
 	public void saveFoodItems(String filename) {
-		File fileOutput = new File(filename); // the File to save information
+		// the File to save information
+		File fileOutput = new File(filename);
 		try {
 			// The PrintWriter object to print information to file
 			PrintWriter outFS = new PrintWriter(fileOutput); 
 			// print all information of all food items
 			for (int i = 0; i < foodItemList.size(); i++) {
-				System.out.println(foodItemToString(foodItemList.get(i)));
 				outFS.println(foodItemToString(foodItemList.get(i)));
 			}
 			outFS.flush();
@@ -278,14 +280,16 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	}
 
 	/**
-	 * The private helper method that returns all the information of a single food
-	 * item including the id, name, calories, fat, carbohydrate, fiber, protein.
+	 * The private helper method that returns all the information 
+	 * of a single food item including the id, name, calories, fat, 
+	 * carbohydrate, fiber, protein.
 	 * 
 	 * @param item the specific food item
 	 * @return the information of a single food item
 	 */
 	private String foodItemToString(FoodItem item) {
-		String str = item.getID() + ","; // the information of a single food item
+		// the information of a single food item
+		String str = item.getID() + ","; 
 		str += item.getName() + ",";
 		str += "calories," + item.getNutrientValue("calories");
 		str += ",fat," + item.getNutrientValue("fat");
@@ -296,4 +300,3 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	}
 
 }
-
