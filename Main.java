@@ -49,6 +49,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -129,11 +130,13 @@ public class Main extends Application{
 		BorderPane mainPane = new BorderPane();
 
 		try {
-			Group root = new Group();
+			StackPane root = new StackPane();
+			root.setId("pane");
 			Scene scene = new Scene(root, 800, 600);
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("FOOD QUERY");
-			scene.setFill(Color.WHITE);
+			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm()); 
+
 
 			// create Buttons
 			createLoadFoodButton(primaryStage, loadFoodButton);
@@ -169,6 +172,7 @@ public class Main extends Application{
 			vboxFoodList.setPrefWidth(200);
 			vboxFoodList.setPadding(new Insets(25, 50, 0, 50));
 			vboxFoodList.setAlignment(Pos.CENTER_LEFT);
+			vboxMealList.setMargin(label3, new Insets(5, 0, 0, 0));
 			vboxFoodList.getChildren().addAll(label1, list1, addToMealButton, label3);
 
 			// meal list
@@ -226,6 +230,7 @@ public class Main extends Application{
 	 * This method creates button to remove food from
 	 * current meal list
 	 * 
+	 * 
 	 * @param removeButton the button use to remove thing
 	 */
 	private void createRemoveButton(Button removeButton) {
@@ -281,7 +286,6 @@ public class Main extends Application{
 
 			double[] nutrient = new double[] { 0d, 0d, 0d, 0d, 0d };
 
-			//gets nutrient elements of each food item in meal list
 			for (FoodItem food : mealList) {
 				nutrient[0] += food.getNutrientValue("calories");
 				nutrient[1] += food.getNutrientValue("fat");
@@ -290,7 +294,6 @@ public class Main extends Application{
 				nutrient[4] += food.getNutrientValue("protein");
 			}
 
-			//complete analyzing sentence
 			Text[] text = new Text[5];
 			text[0] = new Text(String.format("Total energy:    %.2f Cal", nutrient[0]));
 			text[1] = new Text(String.format("Total fat:    %.2f g", nutrient[1]));
@@ -309,16 +312,11 @@ public class Main extends Application{
 	}
 
 	/**
-	 * This method creates button that uses to save the current
-	 * food list into the local directory
-	 * 
-	 * @param primaryStage the original stage
-	 * @param saveButton the button uses to save food list when clicked
+	 * @param primaryStage
+	 * @param saveButton
 	 */
 	private void createSaveButton(Stage primaryStage, Button saveButton) {
 		setSize(saveButton, 200, 50);
-		
-		//handling save Button events
 		saveButton.setOnAction(x -> {
 			final Stage dialog = new Stage();
 			dialog.initModality(Modality.APPLICATION_MODAL);
@@ -326,19 +324,16 @@ public class Main extends Application{
 			GridPane load = new GridPane();
 			gridSetUp(load, "Save file", 1, 1);
 
-			//set label to display non-editable text to the user
 			Label fileName = new Label("Filename");
 			Label location = new Label("Where");
 			gridSetCol(load, new Node[] {fileName, location }, 0);
 
-			//use textfiled to get input from the user
 			TextField userTextField = new TextField();
 			TextField fileLocation = new TextField();
 			Button file = new Button("Browse");
 			Button upload = new Button("SAVE");
 			gridSetCol(load, new Node[] { userTextField, fileLocation, file, upload }, 1);
 
-			//handling file event
 			file.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent x) {
 					DirectoryChooser fileChooser = new DirectoryChooser();
@@ -349,8 +344,6 @@ public class Main extends Application{
 					}
 				}
 			});
-			
-			//handling upload event
 			upload.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent x) {
 					if (!userTextField.getText().isEmpty()) {
@@ -374,20 +367,12 @@ public class Main extends Application{
 	}
 
 	/**
-	 * This method creates button that uses to filter the 
-	 * food items by nutrient, according to 
-	 * the rule list. And then add to the meal list.
-	 * The filter process includes filter, upload, 
-	 * sumit and addButton events
-	 * 
-	 * @param primaryStage the original stage
-	 * @param nutrientFilterBUtton the button that filters the nutrients when clicked
+	 * @param primaryStage
+	 * @param nutrientFilterBUtton
 	 */
 	@SuppressWarnings("static-access")
 	private void createNutrientFilterButton(Stage primaryStage, Button nutrientFilterButton) {
 		setSize(nutrientFilterButton, 200, 50);
-		
-		//handling nutrient-filter event
 		nutrientFilterButton.setOnAction(x -> {
 			rule = new ArrayList<String>();
 			filterNut = new ArrayList<FoodItem>();
@@ -401,7 +386,6 @@ public class Main extends Application{
 			trail.setPrefSize(300, 200);
 			HBox buttons = new HBox();
 
-			//display the list of rule
 			ListView<String> rulesList = new ListView<>();
 			rulesList.setMinWidth(80);
 			Text scenetitle = new Text("Nutrient Filter");
@@ -418,7 +402,6 @@ public class Main extends Application{
 			buttons.setMargin(upload, new Insets(15, 30, 15, 30));
 			buttons.setMargin(upload2, new Insets(15, 30, 15, 30));
 
-			//set panel layout
 			trail.setTop(scenetitle);
 			trail.setBottom(buttons);
 			trail.setLeft(currentRule);
@@ -430,7 +413,6 @@ public class Main extends Application{
 			trail.setAlignment(currentRule, Pos.CENTER);
 			trail.setAlignment(scenetitle, Pos.CENTER);
 
-			//handling upload event
 			upload2.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent x) {
 					final Stage popUp = new Stage();
@@ -439,14 +421,12 @@ public class Main extends Application{
 					GridPane load1 = new GridPane();
 					gridSetUp(load1, "", 1, 1);
 
-					//display nutrient list when file changes
 					ObservableList<String> nutrient = FXCollections.observableArrayList("calories", "fat",
 							"carbohydrate", "fiber", "protein");
 					ObservableList<String> comparator = FXCollections.observableArrayList(">=", "<=", "==");
 					final ComboBox<String> combo1 = new ComboBox<String>(nutrient);
 					final ComboBox<String> combo2 = new ComboBox<String>(comparator);
 
-					//use label to display text
 					Label nutrientL = new Label("Nutrients");
 					Label comparatorL = new Label("Comparator");
 					Label numL = new Label("Number");
@@ -454,15 +434,12 @@ public class Main extends Application{
 					Button submit = new Button("ADD RULE");
 					Label warn = new Label("invalid input");
 
-					//set the layout of grid panel
 					gridSetCol(load1, new Node[] { nutrientL, combo1 }, 0);
 					gridSetCol(load1, new Node[] { comparatorL, combo2 }, 1);
 					gridSetCol(load1, new Node[] { numL, number, submit }, 2);
 
-					//handling sumit event
 					submit.setOnAction(y -> {
 						try {
-							//set and add rules into rule list
 							String curRule = null;
 							curRule = combo1.getValue() + " " + 
 									combo2.getValue() + " " + number.getText();
@@ -531,21 +508,17 @@ public class Main extends Application{
 	}
 
 	/**
-	 * This method create buttons that filters the food items 
-	 * in meal list by food names, and then adds to meal list
-	 * 
-	 * @param primaryStage the original stage 
-	 * @param nameFileterButton the button uses to filter food when clicked
+	 * @param primaryStage
+	 * @param nameFileterButton
 	 */
 	@SuppressWarnings("static-access")
 	private void createNameFilterButton(Stage primaryStage, Button nameFilterButton) {
 		setSize(nameFilterButton, 200, 50);
-		//works when the name-filter button is clicked
 		nameFilterButton.setOnAction(x -> {
-			final Stage dialog = new Stage(); //the stage for filter button
+			final Stage dialog = new Stage();
 			dialog.initModality(Modality.APPLICATION_MODAL);
 			dialog.initOwner(primaryStage);
-			GridPane load = new GridPane(); //grid panel for load food
+			GridPane load = new GridPane();
 			gridSetUp(load, "Name Filter", 2, 1);
 
 			TextField userTextField = new TextField();
@@ -593,11 +566,8 @@ public class Main extends Application{
 	}
 
 	/**
-	 * This method creates button that uses to add food into the
-	 * food list
-	 * 
-	 * @param primaryStage the original stage
-	 * @param addFoodButton the button uses to add food 
+	 * @param primaryStage
+	 * @param addFoodButton
 	 */
 	private void createAddFoodButton(Stage primaryStage, Button addFoodButton) {
 		setSize(addFoodButton, 200, 50);
@@ -608,10 +578,8 @@ public class Main extends Application{
 			GridPane load = new GridPane();
 			gridSetUp(load, "Add Food", 2, 1);
 
-			//label for id in 24 digits in food list
 			Label id = new Label("ID (24 digits):");
 			TextField userID = new TextField();
-			//label for names of food items
 			Label name = new Label("Name:");
 			TextField userName = new TextField();
 			Label calorie = new Label("Calories:");
@@ -679,12 +647,7 @@ public class Main extends Application{
 	}
 
 	/**
-	 * This method creates buttoon to add additional food items
-	 * from file in local directory to food list
-	 * 
-	 * @param primaryStage the original stage 
-	 * @param loadFoodButton the button that uses to add food
-	 * @return loadFoodButton the food list after adding the food items
+	 * @param primaryStage
 	 */
 	private Button createLoadFoodButton(Stage primaryStage, Button loadFoodButton) {
 		setSize(loadFoodButton, 200, 50);
@@ -726,12 +689,7 @@ public class Main extends Application{
 
 		return loadFoodButton;
 	}
-	
-	/**
-	 * This method converts the data into food list
-	 * 
-	 * @return foodList list of food after uploading data
-	 */
+
 	private ArrayList<String> convert(java.util.List<FoodItem> list) {
 		ArrayList<String> foodList = new ArrayList<>();
 		for (int i = 0; i < list.size(); i++) {
@@ -740,12 +698,7 @@ public class Main extends Application{
 
 		return foodList;
 	}
-	
-	/**
-	 * This method sorts the food list in a alphabetic order
-	 * 
-	 * @return list the food list after sorting
-	 */
+
 	private List<FoodItem> sort(java.util.List<FoodItem> list) {
 		// sort the food item lists according to alphabetic order
 		Collections.sort(list, new Comparator<FoodItem>() {
@@ -757,9 +710,6 @@ public class Main extends Application{
 		return list;
 	}
 
-	/**
-	 * This method update the food list 
-	 */
 	private void update(java.util.List<FoodItem> list) {
 		ObservableList<String> updateList = FXCollections.observableArrayList(convert(list));
 		list1.setItems(updateList);
@@ -767,12 +717,6 @@ public class Main extends Application{
 				foods.getAllFoodItems().size()));
 	}
 	
-	/**
-	 * This method generate a random id, which is 24 digit for 
-	 * each food items
-	 * 
-	 * @return id the randomized id
-	 */
 	private String idGenerator () {
 		Random rand1 = new Random();
 		Random rand2 = new Random();
@@ -799,13 +743,6 @@ public class Main extends Application{
 		return id;
 	}
 	
-	/**
-	 * This method checks whether there are duplicate id for different
-	 * food items
-	 * 
-	 * @return true for not having duplicate id
-	 * 		   false for having duplicate id
-	 */
 	private boolean checkIDDuplicate(String id) {
 		for (int i = 0; i < foods.getAllFoodItems().size(); ++i) {
 			if (id.equals(foods.getAllFoodItems().get(i).getID())) {
@@ -815,18 +752,10 @@ public class Main extends Application{
 		return true;
 	}
 
-	/**
-	 * This method sets buttons size, including width and height
-	 * 
-	 * @param button the button to be setted
-	 * @param width the width of button
-	 * @param height the height of button
-	 */
 	private void setSize(Button button, int width, int height) {
 		button.setMinSize(width, height);
 	}
 
-	
 	private void gridSetCol(GridPane grid, Node[] childs, int col) {
 		for (int i = 0; i < childs.length; i++) {
 			grid.add(childs[i], col, i+1);
@@ -843,9 +772,6 @@ public class Main extends Application{
 		grid.add(scenetitle, 0, 0, spanCol, spanRow);
 	}
 
-	/**
-	 * launch GUI
-	 */
 	public static void main(String[] args) {
 		launch(args);
 	}
