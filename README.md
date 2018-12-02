@@ -16,6 +16,6 @@
 - [x] remove meal list
 - [x] update size
 - [x] fix output file
-- [] create executable.jar
-- [] a screenshot of meal and meal analysis
-- [] run on Linux
+- [o] create executable.jar
+- [o] a screenshot of meal and meal analysis
+- [o] run on Linux
