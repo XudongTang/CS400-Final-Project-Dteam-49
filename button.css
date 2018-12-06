@@ -1,0 +1,12 @@
+.button {    
+	-fx-background-radius: 0;
+	-fx-text-fill: #000000;  
+	-fx-font-size: 16px;
+	-fx-font-family: "Century Gothic";    
+	-fx-font-weight: bold;    
+	-fx-background-color: linear-gradient(to bottom, #5c99d6 0%,#5c99d6 100%);    
+}
+
+.button:hover { 
+	-fx-background-color: linear-gradient(to bottom, #196dd3 0%,#196dd3 100%);
+} 

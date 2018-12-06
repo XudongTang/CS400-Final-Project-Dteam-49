@@ -1,1 +1,43 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
+.label { 
+	-fx-font-size: 20.0px;
+	-fx-font-family: "Bauhaus 93";
+	-fx-font-weight: bold;
+	-fx-text-fill: #fcba58; 
+	
+} 
+
+.button {    
+	-fx-background-radius: 0;
+	-fx-text-fill: #000000;  
+	-fx-font-size: 16px;
+	-fx-font-family: "Century Gothic";    
+	-fx-font-weight: bold;    
+	-fx-background-color: linear-gradient(to bottom, #feb302 0%,#fc9402 0%,#fc9402 100%);    
+}
+
+.button:hover { 
+	-fx-background-color: linear-gradient(to bottom, #ff4502 0%,#ff4502 100%);
+} 
+
+#welcome-text { 
+	-fx-font-size: 32px; 
+	-fx-font-family: "Arial Black"; 
+	-fx-fill: #818181; 
+	-fx-effect: innershadow( three-pass-box ,rgba(0,0,0,0.7), 6, 0.0 , 0 , 2 );
+} 
+#actiontarget { 
+	-fx-fill: FIREBRICK; 
+	-fx-font-weight: bold; 
+	-fx-effect: dropshadow( gaussian ,rgba(255,255,255,0.5), 0,0,0,1 );
+}
+.root{
+    -fx-background-image: url("background.jpg");
+}
+#pane{
+    -fx-background-image: url("background.jpg");
+    -fx-background-repeat: stretch;   
+    -fx-background-size: 800 600;
+    -fx-background-position: center center;
+}
+
