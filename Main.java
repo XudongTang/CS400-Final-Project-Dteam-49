@@ -478,6 +478,9 @@ public class Main extends Application{
 						try {
 							//set and add rules into rule list
 							String curRule = null;
+							if(combo1.getValue() == null || combo2.getValue() == null) {
+								throw new NumberFormatException();
+							}
 							curRule = combo1.getValue() + " " + 
 									combo2.getValue() + " " + number.getText();
 							Double.parseDouble(number.getText());
