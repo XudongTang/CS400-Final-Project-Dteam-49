@@ -55,6 +55,12 @@ public class FoodData implements FoodDataADT<FoodItem> {
 
 	// Map of nutrition and their corresponding index
 	private HashMap<String, BPTree<Double, FoodItem>> indexes;
+	//create the BPTree of different nutrients
+	private BPTree<Double, FoodItem> cal = new BPTree<Double, FoodItem>(4); 
+	private BPTree<Double, FoodItem> fat = new BPTree<Double, FoodItem>(4); 
+	private BPTree<Double, FoodItem> carbo = new BPTree<Double, FoodItem>(4); 
+	private BPTree<Double, FoodItem> fiber = new BPTree<Double, FoodItem>(4);
+	private BPTree<Double, FoodItem> protein = new BPTree<Double, FoodItem>(4); 
 	
 	// Comparator that helps to sort the list
     private static final Comparator<FoodItem> FOOD_COMPARATOR = new Comparator<FoodItem>() {
@@ -69,6 +75,12 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	public FoodData() {
 		this.foodItemList = new ArrayList<FoodItem>();
 		this.indexes = new HashMap<String, BPTree<Double, FoodItem>>();
+		// add each nutrition BPTree into the indexes HashMap
+		this.indexes.put("calories", cal);
+		this.indexes.put("fat", fat);
+		this.indexes.put("carbohydrate", carbo);
+		this.indexes.put("fiber", fiber);
+		this.indexes.put("protein", protein);
 	}
 
 	/**
@@ -87,12 +99,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	@Override
 	public void loadFoodItems(String filePath) {
 		Scanner scnr; // the scanner to iterate through the file
-		//create the BPTree of different nutrients
-		BPTree<Double, FoodItem> cal = new BPTree<Double, FoodItem>(4); 
-		BPTree<Double, FoodItem> fat = new BPTree<Double, FoodItem>(4); 
-		BPTree<Double, FoodItem> carbo = new BPTree<Double, FoodItem>(4); 
-		BPTree<Double, FoodItem> fiber = new BPTree<Double, FoodItem>(4);
-		BPTree<Double, FoodItem> protein = new BPTree<Double, FoodItem>(4); 
+		
 
 		try {
 			scnr = new Scanner(new File(filePath));
@@ -125,12 +132,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
 			// sort the food item lists according to alphabetic order
 			Collections.sort(foodItemList, FOOD_COMPARATOR );
 	
-			// add each nutrition BPTree into the indexes HashMap
-			this.indexes.put("calories", cal);
-			this.indexes.put("fat", fat);
-			this.indexes.put("carbohydrate", carbo);
-			this.indexes.put("fiber", fiber);
-			this.indexes.put("protein", protein);
+			
 			
 			scnr.close();//close the scanner
 		} catch (FileNotFoundException e) {

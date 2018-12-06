@@ -49,6 +49,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -117,7 +118,7 @@ public class Main extends Application{
 		Button nameFilterButton = new Button("Name Filter");
 		Button nutrientFilterButton = new Button("Nutrient Filter");
 		Button saveButton = new Button("Save");
-		Button analyzeButton = new Button("Anzlyze Meal");
+		Button analyzeButton = new Button("Anzlyze");
 		Button addToMealButton = new Button("Add to Meal List");
 		Button removeButton = new Button("Remove");
 		Button helpButton = new Button("Help");
@@ -130,11 +131,13 @@ public class Main extends Application{
 
 		try {
 			//set up the main stage
-			Group root = new Group();
+			StackPane root = new StackPane();
+			root.setId("pane");
 			Scene scene = new Scene(root, 800, 600);
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("FOOD QUERY");
-			scene.setFill(Color.WHITE);
+			//scene.setFill(Color.WHITE);
+			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 
 			// create Buttons
 			createLoadFoodButton(primaryStage, loadFoodButton);
@@ -170,6 +173,7 @@ public class Main extends Application{
 			vboxFoodList.setPrefWidth(200);
 			vboxFoodList.setPadding(new Insets(25, 50, 0, 50));
 			vboxFoodList.setAlignment(Pos.CENTER_LEFT);
+			vboxMealList.setMargin(label3, new Insets(5, 0, 0, 0));
 			vboxFoodList.getChildren().addAll(label1, list1, addToMealButton, label3);
 
 			// meal list
@@ -202,7 +206,7 @@ public class Main extends Application{
 	 */
 	private void createHelpButton(Stage primaryStage, Button helpButton) {
 		setSize(helpButton, 100, 30);
-
+		helpButton.getStylesheets().add(getClass().getResource("button.css").toExternalForm());
 		helpButton.setOnAction(x -> {
 			//set up the pop up window
 			final Stage dialog = new Stage();
@@ -326,6 +330,7 @@ public class Main extends Application{
 	 */
 	private void createSaveButton(Stage primaryStage, Button saveButton) {
 		setSize(saveButton, 200, 50);
+		saveButton.getStylesheets().add(getClass().getResource("button.css").toExternalForm());
 		
 		//handling save Button events
 		saveButton.setOnAction(x -> {
@@ -734,9 +739,9 @@ public class Main extends Application{
 					userTextField.setText(filePath.toString());
 				}
 			});
-			foods = new FoodData(); //clear the food list first
 			// upload the file and update the food list view
 			upload.setOnAction(x -> {
+				foods = new FoodData();
 				if (!userTextField.getText().isEmpty()) {
 					foods.loadFoodItems(userTextField.getText());
 					convert(foods.getAllFoodItems());
