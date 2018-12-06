@@ -1,4 +1,11 @@
 # CS400-Final-Project-Dteam-49
+
+## Team Members:
+- Xudong Tang       xtang75@wisc.edu
+- Yixian Gan        ygan23@wisc.edu
+- Yiye Dang         dang6@wisc.edu,
+- Daoxing Zhang     dzhang268@wisc.edu
+- Qiuhong Li        qli288@wisc.edu
 ## Food Query
 ![Screenshot of this project](https://github.com/XudongTang/CS400-Final-Project-Dteam-49/blob/master/screenshot.png)
 ### What is this?
