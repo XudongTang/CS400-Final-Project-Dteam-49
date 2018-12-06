@@ -1,6 +1,6 @@
 # CS400-Final-Project-Dteam-49
 ## Food Query
-![Screenshot of this project](https://raw.githubusercontent.com/username/CS400-Final-Project-Dteam-49/master/screenshot.png)
+![Screenshot of this project](https://github.com/XudongTang/CS400-Final-Project-Dteam-49/blob/master/screenshot.png)
 ### What is this?
 - This is the final team project of Comp Sci 400 for Fall 2018 UW-Madison. 
 - The project is called Food Query, it contains four classes: FoodItem, FoodData, BPtree and Main (The function of each class will be described below).
