@@ -30,7 +30,5 @@
 - This project has no known bug currently, but there might be bugs that hasn't been discovered.
 - please put the "help.jpg" in the source directory instead of the application package directory. 
 - all the other files should go to the application package directly
-### TODO
-- [ ] .jar and makefile 
 ### Special Credit
 Great thanks to YiFeng Yu from China Academy of Art for not making the GUI's css style looks absolutely horrible.
