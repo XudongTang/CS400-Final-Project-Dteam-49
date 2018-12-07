@@ -62,11 +62,8 @@ import javafx.stage.Stage;
 import javafx.geometry.Insets;
 
 /**
- * This class 
- * 
- * 
- * 
- * 
+ * This class contains implementations and functions 
+ * of the GUI interface.
  * 
  * @author Xudong Tang (xtang75@wisc.edu)
  * @author Yixian Gan (ygan23@wisc.edu)
