@@ -45,7 +45,7 @@ import java.util.Queue;
  * @param <V> value - expect a user-defined type that stores all data for 
  * 		a food item
  */
-public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
+public class BPTree<K extends Comparable<K>, V>{
 
 	// Root of the tree
 	private Node root;
@@ -77,7 +77,6 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
 	 * @param key   the specific key
 	 * @param value the specific value
 	 */
-	@Override
 	public void insert(K key, V value) {
 		if (key == null) {
 			return;
@@ -109,7 +108,6 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
 	 * @return list of values that are the result of the range search; 
 	 * 			if nothing found, return empty list
 	 */
-	@Override
 	public List<V> rangeSearch(K key, String comparator) {
 		// determine whether the comparator is the correct format
 		if (!comparator.contentEquals(">=") && !comparator.contentEquals("==")
@@ -616,32 +614,50 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
 							done = true;
 							break;
 						}
+						//add any qualified values in previous node
 						qualified.add(curNode.values.get(i));
 					}
+					//keep looking at earlier node
 					curNode = curNode.previous;
 				}
 
-				int index = 0; // the index of each key of current leaf node
+				//search for starting point in current node
+				// the index of each key of current leaf node
+				int index = 0; 
+				curNode = this;
+				done = false;
+				while (curNode != null && !done) {
+					for (index = 0; index < curNode.keys.size(); index++) {
+						//if key is smaller or equals than the key, then the starting point is found
+						if (key.compareTo(curNode.keys.get(index)) <= 0) {
+							done = true;
+							break;
+						}
+					}
+					if (!done) {
+						curNode = curNode.next;
+					}
+				}
 				try {
-					while (key.compareTo(this.keys.get(index)) > 0) {
-						index++;
+					//add all the values in the tree after starting point
+					//add all values in the current node that are greater than starting value
+					for (int i = index; i < curNode.keys.size(); i++) {
+						qualified.add(curNode.values.get(i));
 					}
-					for (int i = index; i < keys.size(); i++) {
-						qualified.add(values.get(i));
-					}
+					curNode = curNode.next;
 
-					// add all the keys of next leaf Nodes to the qualified
-					curNode = this.next;
+					// add all the values stored in later nodes in the BPtree
 					while (curNode != null) {
 						for (int i = 0; i < curNode.keys.size(); i++) {
 							qualified.add(curNode.values.get(i));
 						}
 						curNode = curNode.next;
 					}
-				} catch (IndexOutOfBoundsException e) {
-					System.out.println("WARNING!!!!!!!!");
+				}catch (NullPointerException e) {
+					System.out.print("WARNING");
 					return qualified;
 				}
+
 			}
 			return qualified;
 		}
