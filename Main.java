@@ -374,7 +374,6 @@ public class Main extends Application{
 						foods.saveFoodItems(path);
 						dialog.close();
 					} else {
-						System.out.println("1");
 						Label warn = new Label("Invalid directory");
 						warn.setTextFill(Color.RED);
 						try {
@@ -749,14 +748,22 @@ public class Main extends Application{
 			});
 			// upload the file and update the food list view
 			upload.setOnAction(x -> {
-				foods = new FoodData();
 				if (!userTextField.getText().isEmpty()) {
+					foods = new FoodData();
 					foods.loadFoodItems(userTextField.getText());
 					convert(foods.getAllFoodItems());
 					update(foods.getAllFoodItems());
-				}
+					dialog.close();
+				} else {
+					Label warn = new Label("Invalid File");
+					warn.setTextFill(Color.RED);
+					try {
+						//warning message for invalid input
+						load.add(warn, 0, 3);
+					} catch (IllegalArgumentException e1) {
 
-				dialog.close();
+					}
+				}
 			});
 			Scene dialogScene = new Scene(load, 300, 200);
 			dialog.setScene(dialogScene);
