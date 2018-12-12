@@ -339,7 +339,7 @@ public class Main extends Application{
 
 			//set label to display non-editable text to the user
 			Label fileName = new Label("Filename");
-			Label location = new Label("Where");
+			Label location = new Label("Directory");
 			gridSetCol(load, new Node[] {fileName, location }, 0);
 
 			//use textfiled to get input from the user
@@ -364,18 +364,26 @@ public class Main extends Application{
 			//handling upload event
 			upload.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent x) {
-					if (!userTextField.getText().isEmpty()) {
+					if (!fileLocation.getText().isEmpty()) {
 						String path = "";
-						if (!fileLocation.getText().isEmpty()) {
+						if (!userTextField.getText().isEmpty()) {
 							path = fileLocation.getText() + "/" + userTextField.getText();
 						} else {
-							path = fileLocation.getText() + "/foodData.txt";
+							path = fileLocation.getText() + "/foodData.csv";
 						}
 						foods.saveFoodItems(path);
 						dialog.close();
-					}
+					} else {
+						System.out.println("1");
+						Label warn = new Label("Invalid directory");
+						warn.setTextFill(Color.RED);
+						try {
+							//warning message for invalid input
+							load.add(warn, 0, 4);
+						} catch (IllegalArgumentException e1) {
 
-					dialog.close();
+						}
+					}
 				}
 			});
 			Scene dialogScene = new Scene(load, SMALL_POPUP_WIDTH, SMALL_POPUP_HEIGHT);
