@@ -23,12 +23,16 @@ package application;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import com.darkprograms.speech.translator.GoogleTranslate;
 
+//import com.google.api.services.translate
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -62,8 +66,11 @@ import javafx.stage.Stage;
 import javafx.geometry.Insets;
 
 /**
- * This class contains implementations and functions 
- * of the GUI interface.
+ * This class 
+ * 
+ * 
+ * 
+ * 
  * 
  * @author Xudong Tang (xtang75@wisc.edu)
  * @author Yixian Gan (ygan23@wisc.edu)
@@ -91,6 +98,9 @@ public class Main extends Application{
 	private List<FoodItem> filterNut = new ArrayList<FoodItem>();
 	private List<String> rule = new ArrayList<String>();
 	private Label label3 = new Label("Number of Food: ");
+	private HashMap<String, String> a = new HashMap<String, String> ();
+	private List<Button> allButton = new ArrayList <Button> ();
+	private List<Label> allLabel = new ArrayList <Label> ();
 	
 	//set up specific int for designing scenes
 	private final int SMALL_POPUP_WIDTH = 300;
@@ -111,16 +121,31 @@ public class Main extends Application{
 	public void start(Stage primaryStage) {
 		//set names for each button
 		Button loadFoodButton = new Button("Load Additional Food");
+		allButton.add(loadFoodButton);
 		Button addFoodButton = new Button("Add Food");
+		allButton.add(addFoodButton);
 		Button nameFilterButton = new Button("Name Filter");
+		allButton.add(nameFilterButton);
 		Button nutrientFilterButton = new Button("Nutrient Filter");
+		allButton.add(nutrientFilterButton);
 		Button saveButton = new Button("Save");
+		allButton.add(saveButton);
 		Button analyzeButton = new Button("Anzlyze");
+		allButton.add(analyzeButton);
 		Button addToMealButton = new Button("Add to Meal List");
+		allButton.add(addToMealButton);
 		Button removeButton = new Button("Remove");
+		allButton.add(removeButton);
 		Button helpButton = new Button("Help");
+		allButton.add(helpButton);
+		Button otherFunction = new Button("Other");
+		allButton.add(otherFunction);
+		
 		Label label1 = new Label("Current Food List");
+		allLabel.add(label1);
 		Label label2 = new Label("Current Meal List");
+		allLabel.add(label2);
+		allLabel.add(label3);
 		VBox vboxButton = new VBox();
 		VBox vboxFoodList = new VBox();
 		VBox vboxMealList = new VBox();
@@ -146,7 +171,8 @@ public class Main extends Application{
 			createAddToMealButton(addToMealButton);
 			createRemoveButton(removeButton);
 			createHelpButton(primaryStage, helpButton);
-
+			createOtherFuncButton(primaryStage, otherFunction);
+			
 			// list view layout
 			list1.setItems(items1);
 			list1.setMaxWidth(200);
@@ -178,14 +204,26 @@ public class Main extends Application{
 			vboxMealList.setPadding(new Insets(50, 50, 0, 50));
 			vboxMealList.setAlignment(Pos.CENTER_RIGHT);
 			vboxMealList.setMargin(helpButton, new Insets(20, 0, 0, 0));
+			vboxMealList.setMargin(otherFunction, new Insets(-32, 100, 0, 0));
 			vboxMealList.getChildren().addAll(label2, list2, 
-					new HBox(analyzeButton, removeButton), helpButton);
+					new HBox(analyzeButton, removeButton), helpButton, otherFunction);
 
 			// main pane
 			mainPane.setLeft(vboxFoodList);
 			mainPane.setCenter(vboxButton);
 			mainPane.setRight(vboxMealList);
-
+			
+			a.put("Russian", "ru");
+			a.put("Chinese", "zh-CN");
+			a.put("French", "fr");
+			a.put("Hindi", "hi");
+			a.put("German", "de");
+			a.put("Japanese", "ja");
+			a.put("Korean", "ko");
+			a.put("Hebrew", "iw");
+			
+			
+			
 			root.getChildren().addAll(mainPane);
 			primaryStage.show();
 		} catch (Exception e) {
@@ -202,7 +240,7 @@ public class Main extends Application{
 	 * @param helpButton the button for help
 	 */
 	private void createHelpButton(Stage primaryStage, Button helpButton) {
-		setSize(helpButton, 100, 30);
+		setSize(helpButton, 100, 25);
 		helpButton.getStylesheets().add(getClass().getResource("button.css").toExternalForm());
 		helpButton.setOnAction(x -> {
 			//set up the pop up window
@@ -339,7 +377,7 @@ public class Main extends Application{
 
 			//set label to display non-editable text to the user
 			Label fileName = new Label("Filename");
-			Label location = new Label("Directory");
+			Label location = new Label("Where");
 			gridSetCol(load, new Node[] {fileName, location }, 0);
 
 			//use textfiled to get input from the user
@@ -364,25 +402,18 @@ public class Main extends Application{
 			//handling upload event
 			upload.setOnAction(new EventHandler<ActionEvent>() {
 				public void handle(ActionEvent x) {
-					if (!fileLocation.getText().isEmpty()) {
+					if (!userTextField.getText().isEmpty()) {
 						String path = "";
-						if (!userTextField.getText().isEmpty()) {
+						if (!fileLocation.getText().isEmpty()) {
 							path = fileLocation.getText() + "/" + userTextField.getText();
 						} else {
-							path = fileLocation.getText() + "/foodData.csv";
+							path = fileLocation.getText() + "/foodData.txt";
 						}
 						foods.saveFoodItems(path);
 						dialog.close();
-					} else {
-						Label warn = new Label("Invalid directory");
-						warn.setTextFill(Color.RED);
-						try {
-							//warning message for invalid input
-							load.add(warn, 0, 4);
-						} catch (IllegalArgumentException e1) {
-
-						}
 					}
+
+					dialog.close();
 				}
 			});
 			Scene dialogScene = new Scene(load, SMALL_POPUP_WIDTH, SMALL_POPUP_HEIGHT);
@@ -482,9 +513,6 @@ public class Main extends Application{
 						try {
 							//set and add rules into rule list
 							String curRule = null;
-							if(combo1.getValue() == null || combo2.getValue() == null) {
-								throw new NumberFormatException();
-							}
 							curRule = combo1.getValue() + " " + 
 									combo2.getValue() + " " + number.getText();
 							Double.parseDouble(number.getText());
@@ -749,21 +777,12 @@ public class Main extends Application{
 			// upload the file and update the food list view
 			upload.setOnAction(x -> {
 				if (!userTextField.getText().isEmpty()) {
-					foods = new FoodData();
 					foods.loadFoodItems(userTextField.getText());
 					convert(foods.getAllFoodItems());
 					update(foods.getAllFoodItems());
-					dialog.close();
-				} else {
-					Label warn = new Label("Invalid File");
-					warn.setTextFill(Color.RED);
-					try {
-						//warning message for invalid input
-						load.add(warn, 0, 3);
-					} catch (IllegalArgumentException e1) {
-
-					}
 				}
+
+				dialog.close();
 			});
 			Scene dialogScene = new Scene(load, 300, 200);
 			dialog.setScene(dialogScene);
@@ -771,6 +790,56 @@ public class Main extends Application{
 		});
 
 		return loadFoodButton;
+	}
+	
+	private void createOtherFuncButton(Stage primaryStage, Button otherFunc) {
+		setSize(otherFunc, 100, 25);
+//		otherFunc.getStylesheets().add(getClass().getResource("button.css").toExternalForm());
+		otherFunc.setOnAction(x -> {
+			final Stage dialog = new Stage();
+			dialog.initModality(Modality.APPLICATION_MODAL);
+			dialog.initOwner(primaryStage);
+			Button translate = new Button ("Translate");
+			VBox load = new VBox();
+			load.setPadding(new Insets(30, 0, 0, 0));
+			load.setSpacing(40);
+			load.setPrefSize(200, 50);
+			load.setAlignment(Pos.CENTER);
+			load.getChildren().addAll(translate);
+			translate.setOnAction(y -> {
+				final Stage pop = new Stage();
+				pop.initModality(Modality.APPLICATION_MODAL);
+				pop.initOwner(dialog);
+				GridPane load1 = new GridPane();
+				gridSetUp(load1, "", 1, 1);
+				
+				Label select = new Label("Select Language");
+				ObservableList<String> languageOption = FXCollections.observableArrayList("Russian", 
+						"Chinese", "French", "Hindi", "German", "Japanese", "Korean", "Hebrew");
+				final ComboBox<String> combo1 = new ComboBox<String>(languageOption);
+				Button submit = new Button("Submit");
+				gridSetCol(load1, new Node[] {select,  combo1, submit}, 0);
+				submit.setOnAction(z -> {
+					for (int i = 0; i < allButton.size(); ++i) {
+						String originalText = allButton.get(i).getText();
+						allButton.get(i).setText(googleTranslate(originalText, combo1.getValue()));;
+					}
+					for (int i = 0; i < allLabel.size(); ++i) {
+						String originalText = allLabel.get(i).getText();
+						allLabel.get(i).setText(googleTranslate(originalText, combo1.getValue()));;
+					}
+					pop.close();
+					dialog.close();
+				});
+				Scene popUp = new Scene(load1, 300, 300);
+				pop.setScene(popUp);
+				pop.show();
+			});
+			
+			Scene dialogScene = new Scene(load, 200, 400);
+			dialog.setScene(dialogScene);
+			dialog.show();
+		});
 	}
 	
 	/**
@@ -909,11 +978,27 @@ public class Main extends Application{
 		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
 		grid.add(scenetitle, 0, 0, spanCol, spanRow);
 	}
-
+	
+	private String googleTranslate (String originalText, String language) {
+		String rtn = "";
+		try {
+			rtn = GoogleTranslate.translate(languageList(language), originalText);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return rtn;
+	}
+	private String languageList(String lan) {
+		return a.get(lan);
+	}
+	
+	
 	/**
 	 * launch GUI
 	 */
 	public static void main(String[] args) {
+		
 		launch(args);
 	}
 	
