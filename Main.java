@@ -130,13 +130,13 @@ public class Main extends Application{
 		allButton.add(nutrientFilterButton);
 		Button saveButton = new Button("Save");
 		allButton.add(saveButton);
-		Button analyzeButton = new Button("Anzlyze");
+		Button analyzeButton = new Button("Analyze");
 		allButton.add(analyzeButton);
 		Button addToMealButton = new Button("Add to Meal List");
 		allButton.add(addToMealButton);
 		Button removeButton = new Button("Remove");
 		allButton.add(removeButton);
-		Button helpButton = new Button("Help");
+		Button helpButton = new Button("Assistance");
 		allButton.add(helpButton);
 		Button otherFunction = new Button("Other");
 		allButton.add(otherFunction);
@@ -664,7 +664,7 @@ public class Main extends Application{
 			dialog.initOwner(primaryStage);
 			GridPane load = new GridPane();
 			gridSetUp(load, "Add Food", 2, 1);
-
+			
 			//label for id in 24 digits in food list
 			Label id = new Label("ID (24 digits):");
 			TextField userID = new TextField();
@@ -736,6 +736,7 @@ public class Main extends Application{
 				}
 			});
 			Scene dialogScene = new Scene(load, 400, 500);
+			dialogScene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			dialog.setScene(dialogScene);
 			dialog.show();
 		});
@@ -794,7 +795,7 @@ public class Main extends Application{
 	
 	private void createOtherFuncButton(Stage primaryStage, Button otherFunc) {
 		setSize(otherFunc, 100, 25);
-//		otherFunc.getStylesheets().add(getClass().getResource("button.css").toExternalForm());
+		otherFunc.getStylesheets().add(getClass().getResource("button.css").toExternalForm());
 		otherFunc.setOnAction(x -> {
 			final Stage dialog = new Stage();
 			dialog.initModality(Modality.APPLICATION_MODAL);
@@ -831,7 +832,7 @@ public class Main extends Application{
 					pop.close();
 					dialog.close();
 				});
-				Scene popUp = new Scene(load1, 300, 300);
+				Scene popUp = new Scene(load1, 200, 170);
 				pop.setScene(popUp);
 				pop.show();
 			});
